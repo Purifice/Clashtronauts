@@ -1,0 +1,134 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerMovement : MonoBehaviour
+{
+
+    private Rigidbody2D rb2D;
+
+    public float speed;
+    public float jump;
+
+    private float moveHorizontal;
+    private float moveVertical;
+
+    private bool isJumping;
+    private bool facingRight = true;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb2D = gameObject.GetComponent<Rigidbody2D>();
+
+        speed = 12.5f;
+        jump = 20f;
+        isJumping = false;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        moveHorizontal = Input.GetAxisRaw("Horizontal");
+        moveVertical = Input.GetAxisRaw("Vertical");
+
+        
+    }
+
+    void FixedUpdate() //FOR PHYSICS
+    {
+        if (moveHorizontal > 0f || moveHorizontal < -0f)
+        {
+            //rb2D.AddForce(new Vector2(moveHorizontal * speed, 0f), ForceMode2D.Impulse);
+            //The above movement method applies a force constantly as the key is pressed.
+            //Not ideal for trying to have a constant max speed until I learn how to set the max velocity effectively
+            rb2D.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
+            //This above movement simply multiples the -1 / 1 response by the speed, so it is more linear
+        }
+
+        if (!isJumping && moveVertical > 0.1f)
+        {
+            // rb2D.AddForce(new Vector2(0f, moveVertical * jump), ForceMode2D.Impulse);
+            //The above method uses the applying force method
+            rb2D.velocity = new Vector2(rb2D.velocity.x, jump);
+            //This method simply jumps by the jump amount linearly
+        }
+
+        if (moveHorizontal < 0 && facingRight)
+        {
+            flip();
+        }
+        if (moveHorizontal > 0 && !facingRight)
+        {
+            flip();
+        }
+
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Surface")
+        {
+            isJumping = false;
+            speed = 12.5f;
+
+            //Debug.Log("notjumping");
+        }
+
+       else if (collision.gameObject.tag == "Wall")
+        {
+
+            if (collision.gameObject.tag == "Surface")
+            {
+                isJumping = false;
+                speed = 12.5f;
+            }
+            else
+            {
+                speed = 1f;
+            }
+        }
+        //prevents most  cases of sticky wall
+    }
+
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Surface")
+        {
+            
+            if (collision.gameObject.tag == "Wall")
+            {
+                isJumping = true;
+                speed = 1f;
+            }
+            else
+            {
+                isJumping = true;
+                speed = 10f;
+            }
+            //the above limits in air horizontal speed
+        }
+        /*else if (collision.gameObject.tag == "Wall")
+        {
+
+            if (collision.gameObject.tag == "Surface")
+            {
+                isJumping = true;
+                speed = 12.5f;
+            }
+            else
+            {
+                isJumping = false;
+                speed = 12.5f;
+            }
+        }*/
+
+        //the above was an attempt at preventing the weird vertical sticky wall jump
+    }
+
+    void flip()
+    {
+        facingRight = !facingRight;
+        transform.Rotate(0, 180, 0);
+    }
+}

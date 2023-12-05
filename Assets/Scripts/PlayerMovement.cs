@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision) 
     {
         if (collision.gameObject.tag == "Surface")
         {
@@ -85,7 +85,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                speed = 1f;
+                speed = 0f;
             }
         }
         //prevents most  cases of sticky wall
@@ -99,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
             if (collision.gameObject.tag == "Wall")
             {
                 isJumping = true;
-                speed = 1f;
+                speed = 0f;
             }
             else
             {
@@ -108,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
             }
             //the above limits in air horizontal speed
         }
-        /*else if (collision.gameObject.tag == "Wall")
+        else if (collision.gameObject.tag == "Wall")
         {
 
             if (collision.gameObject.tag == "Surface")
@@ -118,10 +118,10 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                isJumping = false;
+                isJumping = true;
                 speed = 12.5f;
             }
-        }*/
+        }
 
         //the above was an attempt at preventing the weird vertical sticky wall jump
     }

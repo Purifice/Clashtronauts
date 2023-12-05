@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private float moveHorizontal;
     private float moveVertical;
 
-    private bool isJumping;
+    public bool isJumping;
     private bool facingRight = true;
 
     // Start is called before the first frame update
@@ -98,7 +98,7 @@ public class PlayerMovement : MonoBehaviour
             
             if (collision.gameObject.tag == "Wall")
             {
-                isJumping = true;
+                isJumping = false;
                 speed = 0f;
             }
             else
@@ -113,12 +113,12 @@ public class PlayerMovement : MonoBehaviour
 
             if (collision.gameObject.tag == "Surface")
             {
-                isJumping = true;
+                isJumping = false;
                 speed = 12.5f;
             }
             else
             {
-                isJumping = true;
+                isJumping = true; //causes stuck on ground
                 speed = 12.5f;
             }
         }

@@ -62,12 +62,12 @@ public class PlayerMovement : MonoBehaviour
         {
             flip();
         }
-
+        //flips the character depending on the direction input
     }
 
     void OnTriggerEnter2D(Collider2D collision) 
     {
-        if (collision.gameObject.tag == "Surface")
+        if (collision.gameObject.tag == "Surface") //upon entering just the surface
         {
             isJumping = false;
             speed = 12.5f;
@@ -75,20 +75,20 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log("notjumping");
         }
 
-       else if (collision.gameObject.tag == "Wall")
+       else if (collision.gameObject.tag == "Wall") //upon entering the wall
         {
 
-            if (collision.gameObject.tag == "Surface")
+            if (collision.gameObject.tag == "Surface") //upon entering both wall and surface
             {
                 isJumping = false;
                 speed = 12.5f;
             }
-            else
+            else //upon entering just the wall
             {
                 speed = 0f;
             }
         }
-        //prevents most  cases of sticky wall
+        //prevents most cases of sticky wall
     }
 
     void OnTriggerExit2D(Collider2D collision)
@@ -96,34 +96,34 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.tag == "Surface")
         {
             
-            if (collision.gameObject.tag == "Wall")
-            {
-                isJumping = false;
-                speed = 0f;
-            }
-            else
+            if (collision.gameObject.tag == "Wall") //if exiting both surface and wall
             {
                 isJumping = true;
                 speed = 10f;
             }
-            //the above limits in air horizontal speed
+            else //for just exiting a collision with the surface, not the wall THIS CAUSES THE PERSISTENT STICKY WALL
+            //how to know if exiting a collision with surface but still colliding with wall? new void needed?
+            {
+                isJumping = true;
+                speed = 10f; 
+            }
         }
         else if (collision.gameObject.tag == "Wall")
         {
 
-            if (collision.gameObject.tag == "Surface")
+            if (collision.gameObject.tag == "Surface") //if exiting both wall and surface - redundant? neccessary? 
             {
-                isJumping = false;
-                speed = 12.5f;
+                isJumping = true;
+                speed = 10f;
             }
-            else
+            else //just exiting a collision with the wall, not the surface - regardless of whether on ground or in air
+             //how to know if exiting a collision with wall but still colliding with surface? new void needed?
             {
-                isJumping = true; //causes stuck on ground
-                speed = 12.5f;
+                //isJumping = false; //causes the persistent sticky floor or infinent jump depending on false/true
+               speed = 12.5f;
             }
         }
 
-        //the above was an attempt at preventing the weird vertical sticky wall jump
     }
 
     void flip()

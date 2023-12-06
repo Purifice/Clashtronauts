@@ -100,27 +100,15 @@ public class PlayerMovement : MonoBehaviour
                 isJumping = true;
                 speed = 10f;
             }
-            else //for just exiting a collision with the surface, not the wall THIS CAUSES THE PERSISTENT STICKY WALL
-            //how to know if exiting a collision with surface but still colliding with wall? new void needed?
+            else //for just exiting a collision with the surface, not the wall
             {
                 isJumping = true;
                 speed = 10f; 
             }
         }
-        else if (collision.gameObject.tag == "Wall")
+        else if (collision.gameObject.tag == "Wall") // exiting a collision with the wall, not the surface - regardless of whether on surface or not
         {
-
-            if (collision.gameObject.tag == "Surface") //if exiting both wall and surface - redundant? neccessary? 
-            {
-                isJumping = true;
-                speed = 10f;
-            }
-            else //just exiting a collision with the wall, not the surface - regardless of whether on ground or in air
-             //how to know if exiting a collision with wall but still colliding with surface? new void needed?
-            {
-                //isJumping = false; //causes the persistent sticky floor or infinent jump depending on false/true
               speed = 12.5f;
-            }
         }
 
     }

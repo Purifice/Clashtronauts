@@ -65,31 +65,30 @@ public class PlayerMovement : MonoBehaviour
         //flips the character depending on the direction input
     }
 
-    void OnTriggerEnter2D(Collider2D collision) 
+    void OnTriggerStay2D(Collider2D collision) 
     {
-        if (collision.gameObject.tag == "Surface") //upon entering just the surface
+        if (collision.gameObject.tag == "Surface") //every frame upon the surface:
         {
             isJumping = false;
             speed = 12.5f;
 
-            //Debug.Log("notjumping");
         }
 
-       else if (collision.gameObject.tag == "Wall") //upon entering the wall
+       else if (collision.gameObject.tag == "Wall") //every frame upon the wall:
         {
 
-            if (collision.gameObject.tag == "Surface") //upon entering both wall and surface
+            if (collision.gameObject.tag == "Surface") //every frame upon both the wall and surface
             {
                 isJumping = false;
                 speed = 12.5f;
             }
-            else //upon entering just the wall
+            else //every frame upon just the wall:
             {
                 speed = 0f;
             }
         }
-        //prevents most cases of sticky wall
     }
+    
 
     void OnTriggerExit2D(Collider2D collision)
     {
@@ -120,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
              //how to know if exiting a collision with wall but still colliding with surface? new void needed?
             {
                 //isJumping = false; //causes the persistent sticky floor or infinent jump depending on false/true
-               speed = 12.5f;
+              speed = 12.5f;
             }
         }
 

@@ -105,6 +105,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 speed = 0f;
                 animator.SetBool("isInAir", true);
+                Debug.Log("Error"); //this section gives animation error
 
             }
         }

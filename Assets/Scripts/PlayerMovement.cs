@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -12,9 +13,14 @@ public class PlayerMovement : MonoBehaviour
 
     private float moveHorizontal;
     private float moveVertical;
+    private float vertical;
 
     public bool isJumping;
     private bool facingRight = true;
+    private bool facingFront = true;
+    private bool isLadder;
+    private bool isClimbing;
+    private bool canFlip = true;
 
     private Animator animator;
 
@@ -35,11 +41,24 @@ public class PlayerMovement : MonoBehaviour
     {
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
+        vertical = Input.GetAxis("Vertical");
 
+        if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
+        {
+            isClimbing = true;
+            canFlip = false;
+        }
+        else
+        {
+            isClimbing=false;
+            canFlip = true;
+        }
+        //find a way to make this slightly more persisent to prevent ladder animation glitches
     }
 
     void FixedUpdate() //FOR PHYSICS
     {
+
         if (moveHorizontal > 0f || moveHorizontal < -0f)
         {
             //rb2D.AddForce(new Vector2(moveHorizontal * speed, 0f), ForceMode2D.Impulse);
@@ -70,19 +89,58 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
-        if (moveHorizontal < 0 && facingRight)
+        if (moveHorizontal < 0 && facingRight && canFlip)
         {
             flip();
         }
-        if (moveHorizontal > 0 && !facingRight)
+        if (moveHorizontal > 0 && !facingRight && canFlip)
         {
             flip();
         }
-        //flips the character depending on the direction input
+       
+        if (isClimbing && facingFront && facingRight)
+        {
+            facingFront = !facingFront;
+            transform.Rotate(0, -90, 0); 
+        }
+        else if (isClimbing && facingFront && !facingRight)
+        {   facingFront = !facingFront;
+            transform.Rotate(0, 90, 0);
+        }
+
+        if (!isClimbing && !facingFront && facingRight)
+        {
+            facingFront = !facingFront;
+            transform.Rotate(0, 90, 0);
+        }
+        else if (!isClimbing && !facingFront && !facingRight)
+        {
+            facingFront = !facingFront;
+            transform.Rotate(0, -90, 0);
+        }    
+
+
+        if (isClimbing)
+        {
+            rb2D.gravityScale = 0f; //sets gravity to 0
+            rb2D.velocity = new Vector2(rb2D.velocity.x, vertical * speed); //moves up ladder
+        }    
+        else
+        {
+            rb2D.gravityScale = 5f;
+
+        }
     }
 
     void OnTriggerStay2D(Collider2D collision) 
     {
+
+        if (collision.gameObject.tag == "Ladder") //if touching ladder
+        {
+            isLadder = true;
+
+        }
+
         if (collision.gameObject.tag == "Surface") //every frame upon the surface:
         {
             isJumping = false;
@@ -111,6 +169,14 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collision)
     {
+
+        if (collision.gameObject.tag == "Ladder") // if exiting collision with ladder
+        {
+            isLadder = false;
+            isClimbing = false;
+        }
+
+
         if (collision.gameObject.tag == "Surface")
         {
             
@@ -139,5 +205,5 @@ public class PlayerMovement : MonoBehaviour
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
     }
-
+  
 }

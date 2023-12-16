@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Surface
   - Wall
+  - Ladder
   layers:
   - Default
   - TransparentFX

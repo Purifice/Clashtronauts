@@ -98,14 +98,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 isJumping = false;
                 speed = 12.5f;
-                animator.SetBool("isInAir", false);
 
             }
             else //every frame upon just the wall:
             {
                 speed = 0f;
-                animator.SetBool("isInAir", true);
-                Debug.Log("Error"); //this section gives animation error
 
             }
         }
@@ -142,4 +139,5 @@ public class PlayerMovement : MonoBehaviour
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
     }
+
 }

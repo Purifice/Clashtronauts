@@ -48,12 +48,10 @@ public class PlayerMovement : MonoBehaviour
         if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
         {
             isClimbing = true;
-            canFlip = false;
         }
         else
         {
-            isClimbing=false;
-            canFlip = true;
+            isClimbing = false;
         }
         //find a way to make this slightly more persisent to prevent ladder animation glitches
     }
@@ -90,6 +88,32 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isJumping", false);
 
         }
+       
+        if (isClimbing && facingFront && facingRight) 
+        {
+            canFlip = false;
+            facingFront = !facingFront;
+            transform.Rotate(0, -90, 0); 
+        }
+        else if (isClimbing && facingFront && !facingRight) 
+        {
+            canFlip = false;
+            facingFront = !facingFront;
+            transform.Rotate(0, 90, 0);
+        }
+
+        if (!facingFront && moveHorizontal < 0) 
+        {
+            canFlip = true;
+            facingFront = !facingFront;
+            transform.Rotate(0, -90, 0);
+        }
+        else if (!facingFront && moveHorizontal > 0)
+        {
+            canFlip = true;
+            facingFront = !facingFront;
+            transform.Rotate(0, 90, 0);
+        }
 
         if (moveHorizontal < 0 && facingRight && canFlip)
         {
@@ -99,28 +123,6 @@ public class PlayerMovement : MonoBehaviour
         {
             flip();
         }
-       
-        if (isClimbing && facingFront && facingRight) 
-        {
-            facingFront = !facingFront;
-            transform.Rotate(0, -90, 0); 
-        }
-        else if (isClimbing && facingFront && !facingRight) 
-        {   facingFront = !facingFront;
-            transform.Rotate(0, 90, 0);
-        }
-
-        if (!facingFront && moveHorizontal < 0) 
-        {
-            facingFront = !facingFront;
-            transform.Rotate(0, 90, 0);
-        }
-        else if (!facingFront && moveHorizontal > 0)
-        {
-            facingFront = !facingFront;
-            transform.Rotate(0, -90, 0);
-        }    
-
 
         if (isClimbing)
         {

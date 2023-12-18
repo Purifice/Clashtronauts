@@ -18,11 +18,12 @@ public class PlayerMovement : MonoBehaviour
     public bool isJumping;
     private bool facingRight = true;
     private bool facingFront = true;
-    private bool isLadder;
-    private bool isClimbing;
+    public bool isLadder;
+    public bool isClimbing;
     private bool canFlip = true;
 
     private Animator animator;
+    private CapsuleCollider capsuleCollider;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
         isJumping = false;
 
         animator = GetComponent<Animator>();
+        capsuleCollider = GetComponentInChildren<CapsuleCollider>();
     }
 
     // Update is called once per frame
@@ -98,22 +100,22 @@ public class PlayerMovement : MonoBehaviour
             flip();
         }
        
-        if (isClimbing && facingFront && facingRight)
+        if (isClimbing && facingFront && facingRight) 
         {
             facingFront = !facingFront;
             transform.Rotate(0, -90, 0); 
         }
-        else if (isClimbing && facingFront && !facingRight)
+        else if (isClimbing && facingFront && !facingRight) 
         {   facingFront = !facingFront;
             transform.Rotate(0, 90, 0);
         }
 
-        if (!isClimbing && !facingFront && facingRight)
+        if (!facingFront && moveHorizontal < 0) 
         {
             facingFront = !facingFront;
             transform.Rotate(0, 90, 0);
         }
-        else if (!isClimbing && !facingFront && !facingRight)
+        else if (!facingFront && moveHorizontal > 0)
         {
             facingFront = !facingFront;
             transform.Rotate(0, -90, 0);
@@ -134,12 +136,6 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D collision) 
     {
-
-        if (collision.gameObject.tag == "Ladder") //if touching ladder
-        {
-            isLadder = true;
-
-        }
 
         if (collision.gameObject.tag == "Surface") //every frame upon the surface:
         {
@@ -165,17 +161,9 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-    
 
     void OnTriggerExit2D(Collider2D collision)
     {
-
-        if (collision.gameObject.tag == "Ladder") // if exiting collision with ladder
-        {
-            isLadder = false;
-            isClimbing = false;
-        }
-
 
         if (collision.gameObject.tag == "Surface")
         {

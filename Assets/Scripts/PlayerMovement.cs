@@ -24,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
     private bool facingRight = true;
     private bool facingFront = true; //for ladder directional
     private bool canFlip = true;
+    private bool periodDown;
+    private bool isDiving;
 
 
     // Start is called before the first frame update
@@ -42,14 +44,47 @@ public class PlayerMovement : MonoBehaviour
     {
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
-        vertical = Input.GetAxis("Vertical");       
+        vertical = Input.GetAxis("Vertical");
+
+       if (Input.GetKeyDown(KeyCode.Period)) //if pressing the period key
+        {
+            periodDown = true;
+            animator.SetBool("isDiving", true); //start animation
+            isDiving = true; 
+            canFlip = false;
+        }
+        else
+        {
+            periodDown = false;
+
+        }
+
+        if (!isJumping && !isClimbing && periodDown) //if on the ground and pressing the dive button
+        {
+           
+            if(facingRight)
+            {
+                rb2D.velocity = new Vector2(12.5f, 15f); 
+            }
+            else
+            {
+                rb2D.velocity = new Vector2(-12.5f, 15f);
+            }
+        }
+        else if (isJumping && !isClimbing && periodDown) //if in air while pressing dive button
+        {
+            animator.SetBool("isDiving", true); //start the animation
+        }
+        else //if not diving
+        {
+        }
     }
 
     // Fixed Update is called every fixed-rate frame, and is best for physics
     void FixedUpdate() 
     {
 
-        if (moveHorizontal > 0f || moveHorizontal < -0f)
+        if (!isDiving && (moveHorizontal > 0f || moveHorizontal < -0f))
         {
             //rb2D.AddForce(new Vector2(moveHorizontal * speed, 0f), ForceMode2D.Impulse);
             //The above movement method applies a force constantly as the key is pressed, good for 0g?
@@ -73,6 +108,8 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isJumping", false);
 
         }
+       
+        
 
         if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
         {
@@ -155,9 +192,14 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.tag == "Surface") //every frame upon the surface:
         {
             isJumping = false; //allow for jumping
+            isDiving = false; //allow for normal movement
             speed = 12.5f; //default ground movement speed
             animator.SetBool("isInAir", false);
-
+            animator.SetBool("isDiving", false);
+            if (!isClimbing)
+            {
+             canFlip = true; 
+            }
         }
 
         else if (collision.gameObject.tag == "Wall") //every frame upon the wall:

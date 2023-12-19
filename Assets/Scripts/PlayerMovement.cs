@@ -7,35 +7,34 @@ public class PlayerMovement : MonoBehaviour
 {
 
     private Rigidbody2D rb2D;
+    private Animator animator;
+
 
     public float speed;
     public float jump;
 
     private float moveHorizontal;
     private float moveVertical;
-    private float vertical;
+    private float vertical; //for ladder movement
 
     public bool isJumping;
-    private bool facingRight = true;
-    private bool facingFront = true;
-    public bool isLadder;
+    public bool isLadder; //touching ladder, referenced by external script
     public bool isClimbing;
+
+    private bool facingRight = true;
+    private bool facingFront = true; //for ladder directional
     private bool canFlip = true;
 
-    private Animator animator;
-    private CapsuleCollider capsuleCollider;
 
     // Start is called before the first frame update
     void Start()
     {
         rb2D = gameObject.GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
         speed = 12.5f;
         jump = 20f;
         isJumping = false;
-
-        animator = GetComponent<Animator>();
-        capsuleCollider = GetComponentInChildren<CapsuleCollider>();
     }
 
     // Update is called once per frame
@@ -43,31 +42,19 @@ public class PlayerMovement : MonoBehaviour
     {
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
-        vertical = Input.GetAxis("Vertical");
-
-        if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
-        {
-            isClimbing = true;
-        }
-        else
-        {
-            isClimbing = false;
-        }
-        //find a way to make this slightly more persisent to prevent ladder animation glitches
+        vertical = Input.GetAxis("Vertical");       
     }
 
-    void FixedUpdate() //FOR PHYSICS
+    // Fixed Update is called every fixed-rate frame, and is best for physics
+    void FixedUpdate() 
     {
 
         if (moveHorizontal > 0f || moveHorizontal < -0f)
         {
             //rb2D.AddForce(new Vector2(moveHorizontal * speed, 0f), ForceMode2D.Impulse);
-            //The above movement method applies a force constantly as the key is pressed.
-            //Not ideal for trying to have a constant max speed until I learn how to set the max velocity effectively
+            //The above movement method applies a force constantly as the key is pressed, good for 0g?
             rb2D.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
             animator.SetBool("isWalking", true);
-
-            //This above movement simply multiples the -1 / 1 response by the speed, so it is more linear
         }
         else
         {
@@ -80,69 +67,95 @@ public class PlayerMovement : MonoBehaviour
             //The above method uses the applying force method
             rb2D.velocity = new Vector2(rb2D.velocity.x, jump);
             animator.SetBool("isJumping", true);
-
-            //This method simply jumps by the jump amount linearly
         }
         else
         {
             animator.SetBool("isJumping", false);
 
         }
-       
-        if (isClimbing && facingFront && facingRight) 
-        {
-            canFlip = false;
-            facingFront = !facingFront;
-            transform.Rotate(0, -90, 0); 
-        }
-        else if (isClimbing && facingFront && !facingRight) 
-        {
-            canFlip = false;
-            facingFront = !facingFront;
-            transform.Rotate(0, 90, 0);
-        }
 
-        if (!facingFront && moveHorizontal < 0) 
+        if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
         {
-            canFlip = true;
-            facingFront = !facingFront;
-            transform.Rotate(0, -90, 0);
+            isClimbing = true;
         }
-        else if (!facingFront && moveHorizontal > 0)
+        else
         {
-            canFlip = true;
-            facingFront = !facingFront;
-            transform.Rotate(0, 90, 0);
-        }
-
-        if (moveHorizontal < 0 && facingRight && canFlip)
-        {
-            flip();
-        }
-        if (moveHorizontal > 0 && !facingRight && canFlip)
-        {
-            flip();
+            isClimbing = false;
         }
 
         if (isClimbing)
         {
             rb2D.gravityScale = 0f; //sets gravity to 0
             rb2D.velocity = new Vector2(rb2D.velocity.x, vertical * speed); //moves up ladder
-        }    
+        }
         else
         {
-            rb2D.gravityScale = 5f;
+            rb2D.gravityScale = 5f; //reset gravity to default if not climbing
 
         }
+
+        if (isClimbing && facingFront && facingRight) //if entering a climb from the right
+        {
+            canFlip = false; //prevent 180 degree flips
+            facingFront = !facingFront; //prevent looping rotation
+            transform.Rotate(0, -90, 0); //rotate left to face ladder
+        }
+        else if (isClimbing && facingFront && !facingRight) //if entering a climb from the left
+        {
+            canFlip = false;
+            facingFront = !facingFront;
+            transform.Rotate(0, 90, 0); //rotate right to face ladder
+        }
+
+        if (!facingFront && moveHorizontal < 0 && !isLadder) //if off ladder but still facing it, and moving left
+        {
+            if (!facingRight) //if facing left
+            {
+                canFlip = true; //allow for 180 rotations
+                facingFront = !facingFront; 
+                transform.Rotate(0, -90, 0); //rotate left
+            }
+            else if (facingRight) //if facing right
+            {
+                canFlip = true;
+                facingFront = !facingFront;
+                transform.Rotate(0, 90, 0); //rotate right
+            }
+        }
+        else if (!facingFront && moveHorizontal > 0 && !isLadder) //if off ladder but still facing it, and moving right
+        {
+            if (facingRight) //if facing right
+            {
+                canFlip = true;
+                facingFront = !facingFront;
+                transform.Rotate(0, 90, 0); //rotate right
+            }
+            else if (!facingRight) //if facing left
+            {
+                canFlip = true;
+                facingFront = !facingFront;
+                transform.Rotate(0, -90, 0); //rotate left
+            }
+        }
+
+        if (moveHorizontal < 0 && facingRight && canFlip) //if moving left and facing right and able to flip
+        {
+            flip(); //defined in void flip
+        }
+        if (moveHorizontal > 0 && !facingRight && canFlip) //if moving right and facing left and able to flip
+        {
+            flip();
+        }
+
     }
 
-    void OnTriggerStay2D(Collider2D collision) 
+    void OnTriggerStay2D(Collider2D collision) //every frame where Collider2D is activating a trigger collision
     {
 
         if (collision.gameObject.tag == "Surface") //every frame upon the surface:
         {
-            isJumping = false;
-            speed = 12.5f;
+            isJumping = false; //allow for jumping
+            speed = 12.5f; //default ground movement speed
             animator.SetBool("isInAir", false);
 
         }
@@ -158,16 +171,16 @@ public class PlayerMovement : MonoBehaviour
             }
             else //every frame upon just the wall:
             {
-                speed = 0f;
+                speed = 0f; //prevent momentum pinning to wall
 
             }
         }
     }
 
-    void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision) //upon Collider2D no longer activating a trigger collision
     {
 
-        if (collision.gameObject.tag == "Surface")
+        if (collision.gameObject.tag == "Surface") //if colliding with the surface
         {
             
             if (collision.gameObject.tag == "Wall") //if exiting both surface and wall
@@ -190,9 +203,9 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    void flip()
+    void flip() //flips character direction 180
     {
-        facingRight = !facingRight;
+        facingRight = !facingRight; //prevents flipping loop
         transform.Rotate(0, 180, 0);
     }
   

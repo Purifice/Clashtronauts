@@ -20,12 +20,12 @@ public class PlayerMovement : MonoBehaviour
     public bool isJumping;
     public bool isLadder; //touching ladder, referenced by external script
     public bool isClimbing;
+    public bool isDiving;
 
     private bool facingRight = true;
     private bool facingFront = true; //for ladder directional
     private bool canFlip = true;
     private bool periodDown;
-    private bool isDiving;
 
 
     // Start is called before the first frame update
@@ -109,15 +109,22 @@ public class PlayerMovement : MonoBehaviour
 
         }
        
-        
+        if (isLadder)
+        {
+            animator.SetBool("isDiving", false);
+        }
 
         if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
         {
             isClimbing = true;
+            animator.SetBool("isClimbing", true);
+
         }
         else
         {
             isClimbing = false;
+            animator.SetBool("isClimbing", false);
+
         }
 
         if (isClimbing)

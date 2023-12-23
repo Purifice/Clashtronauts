@@ -20,11 +20,13 @@ public class PlayerCollider : MonoBehaviour
         if (playermovement.isDiving && !isDiving && !playermovement.isClimbing)
         {
             transform.Rotate(0, 0, -90);
+            transform.localPosition = new Vector3(0.5f,-0.5f,0);
             isDiving = !isDiving;
         }
         else if (!playermovement.isDiving && isDiving && !playermovement.isClimbing)
         {
             transform.Rotate(0, 0, 90);
+            transform.localPosition = new Vector3(0, 0, 0);
             isDiving = !isDiving;
         }
     }

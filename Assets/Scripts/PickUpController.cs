@@ -5,6 +5,8 @@ using UnityEngine;
 public class PickUpController : MonoBehaviour
 {
 
+    public PlayerMovement playermovement;
+
     public Rigidbody2D rb2D;
     public CircleCollider2D coll;
     public Transform player;
@@ -48,10 +50,15 @@ public class PickUpController : MonoBehaviour
 
         }
 
-        if (equipped && Input.GetKeyDown(KeyCode.Comma))
+        if (playermovement.facingFront && equipped && (Input.GetKeyDown(KeyCode.Comma) || Input.GetKeyDown(KeyCode.Period)))
+        {
+            Throw();
+        }
+
+       /* if (!playermovement.facingFront)
         {
             Drop();
-        }
+        }*/
     }
 
     private void Pickup()
@@ -60,6 +67,9 @@ public class PickUpController : MonoBehaviour
         slotFull = true;
         rb2D.isKinematic = true;
         coll.isTrigger = true;
+        transform.gameObject.tag = "Untagged";
+
+        rb2D.velocity = new Vector2(0, 0);
 
         transform.SetParent(Container);
         transform.localPosition = Vector3.zero;
@@ -67,10 +77,12 @@ public class PickUpController : MonoBehaviour
         transform.localScale = Vector3.one;
     }
 
-    private void Drop()
+    private void Throw()
     {
         equipped = false;
         slotFull = false;
+        transform.gameObject.tag = "Surface";
+
 
         transform.SetParent(null);
 
@@ -83,4 +95,15 @@ public class PickUpController : MonoBehaviour
         rb2D.AddForce(playermomentum.up * dropUpwardForce, ForceMode2D.Impulse);
 
     }
+
+   /* private void Drop()
+    {
+        equipped = false;
+        slotFull = false;
+
+        transform.SetParent(null) ;
+
+        rb2D.isKinematic = false;
+        coll.isTrigger = false;
+    }*/
 }

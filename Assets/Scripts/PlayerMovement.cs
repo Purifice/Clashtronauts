@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -21,11 +22,13 @@ public class PlayerMovement : MonoBehaviour
     public bool isLadder; //touching ladder, referenced by external script
     public bool isClimbing;
     public bool isDiving;
+    public bool facingFront = true; //for ladder directional
+
 
     private bool facingRight = true;
-    private bool facingFront = true; //for ladder directional
     private bool canFlip = true;
     private bool periodDown;
+    private bool isMoving;
 
 
     // Start is called before the first frame update
@@ -33,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb2D = gameObject.GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
 
         speed = 12.5f;
         jump = 20f;
@@ -50,7 +54,6 @@ public class PlayerMovement : MonoBehaviour
         {
             periodDown = true;
             animator.SetBool("isDiving", true); //start animation
-            isDiving = true; 
             canFlip = false;
         }
         else
@@ -61,8 +64,9 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isJumping && !isClimbing && periodDown) //if on the ground and pressing the dive button
         {
-           
-            if(facingRight)
+            isDiving = true;
+
+            if (facingRight)
             {
                 rb2D.velocity = new Vector2(12.5f, 15f); 
             }
@@ -73,10 +77,13 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (isJumping && !isClimbing && periodDown) //if in air while pressing dive button
         {
+            isDiving = true;
+
             animator.SetBool("isDiving", true); //start the animation
         }
         else //if not diving
         {
+            isDiving = false;
         }
     }
 
@@ -90,10 +97,12 @@ public class PlayerMovement : MonoBehaviour
             //The above movement method applies a force constantly as the key is pressed, good for 0g?
             rb2D.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
             animator.SetBool("isWalking", true);
+            isMoving = true;
         }
         else
         {
             animator.SetBool("isWalking", false);
+            isMoving = false;
         }
 
         if (!isJumping && moveVertical > 0.1f)
@@ -108,11 +117,10 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isJumping", false);
 
         }
-       
-        if (isLadder)
-        {
-            animator.SetBool("isDiving", false);
-        }
+
+
+
+      
 
         if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
         {
@@ -129,8 +137,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (isClimbing)
         {
+            if (isJumping)
+            {
+                animator.SetBool("isDiving", false);
+            }
+
             rb2D.gravityScale = 0f; //sets gravity to 0
             rb2D.velocity = new Vector2(rb2D.velocity.x, vertical * speed); //moves up ladder
+            
         }
         else
         {
@@ -181,6 +195,33 @@ public class PlayerMovement : MonoBehaviour
                 transform.Rotate(0, -90, 0); //rotate left
             }
         }
+
+        if (!facingFront && isLadder)
+        {
+            canFlip = false;
+        }
+        if (!facingFront && !isLadder)
+        {
+            canFlip = true;
+        }
+
+        if (!facingFront && !isJumping && !isMoving && !facingRight)
+        {
+            canFlip = true;
+            facingFront = !facingFront;
+            transform.Rotate(0, -90, 0);
+
+        }
+        else if (!facingFront && !isJumping && !isMoving && facingRight)
+        {
+            canFlip = true;
+            facingFront = !facingFront;
+            transform.Rotate(0, 90, 0);
+
+        }
+
+
+
 
         if (moveHorizontal < 0 && facingRight && canFlip) //if moving left and facing right and able to flip
         {

@@ -29,13 +29,18 @@ public class PickUpController : MonoBehaviour
         if(!equipped)
         {
             rb2D.isKinematic = false;
-            coll.isTrigger = false;
+            //coll.isTrigger = false;
+            Physics2D.IgnoreLayerCollision(7, 8, false);
+
+
         }
 
         if (equipped)
         {
             rb2D.isKinematic = true;
-            coll.isTrigger = true;
+            //coll.isTrigger = true;
+            Physics2D.IgnoreLayerCollision(7, 8, true);
+
             slotFull = true;
         }
     }
@@ -66,7 +71,10 @@ public class PickUpController : MonoBehaviour
         equipped = true;
         slotFull = true;
         rb2D.isKinematic = true;
-        coll.isTrigger = true;
+        //coll.isTrigger = true;
+        Physics2D.IgnoreLayerCollision(7, 8, true);
+
+
         transform.gameObject.tag = "Untagged";
 
         rb2D.velocity = new Vector2(0, 0);
@@ -87,7 +95,10 @@ public class PickUpController : MonoBehaviour
         transform.SetParent(null);
 
         rb2D.isKinematic = false;
-        coll.isTrigger = false;
+        //coll.isTrigger = false;
+        Physics2D.IgnoreLayerCollision(7, 8, false);
+
+
 
         rb2D.velocity = player.GetComponent<Rigidbody2D>().velocity;
 

@@ -27,6 +27,30 @@ ModelImporter:
   - first:
       74: 8349542763059015795
     second: Armature|Walk
+  - first:
+      74: -8184266529836836118
+    second: Traingle2|Idle
+  - first:
+      74: 292097517097059331
+    second: Armature|Carry Idle
+  - first:
+      74: -4664813340237738945
+    second: Armature|Carry Run
+  - first:
+      74: 207092312667357967
+    second: Armature|In Air Throw
+  - first:
+      74: 943790113306548900
+    second: Armature|In_Air_Cary
+  - first:
+      74: -7197099720536120445
+    second: Armature|Pick Up Idle
+  - first:
+      74: 7247835002063760728
+    second: Armature|Throw Idle
+  - first:
+      74: -5059370924656377423
+    second: Armature|Throw Run
   externalObjects: {}
   materials:
     materialImportMode: 2

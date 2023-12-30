@@ -20,13 +20,17 @@ public class PickUpController : MonoBehaviour
     public bool equipped;
     public static bool slotFull;
 
- 
-    
-    
+    private Animator animator;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
-        if(!equipped)
+
+        animator = playermovement.GetComponent<Animator>();
+
+        if (!equipped)
         {
             rb2D.isKinematic = false;
             //coll.isTrigger = false;
@@ -74,6 +78,8 @@ public class PickUpController : MonoBehaviour
         //coll.isTrigger = true;
         Physics2D.IgnoreLayerCollision(7, 8, true);
 
+        animator.SetBool("isCarrying", true);
+
 
         transform.gameObject.tag = "Untagged";
 
@@ -91,6 +97,7 @@ public class PickUpController : MonoBehaviour
         slotFull = false;
         transform.gameObject.tag = "Surface";
 
+        animator.SetBool("isCarrying", false);
 
         transform.SetParent(null);
 

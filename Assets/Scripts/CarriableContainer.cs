@@ -24,7 +24,14 @@ public class CarriableContainer : MonoBehaviour
        
         else if (playermovement.facingFront)
         {
-            transform.localPosition = new Vector3(1.15f, -.2f, 0);
+            if (!playermovement.isJumping)
+            {
+                transform.localPosition = new Vector3(.8f, -.35f, 0);
+            }
+            else
+            {
+                transform.localPosition = new Vector3(.75f, -.575f, 0);
+            }
         }
     }
 }

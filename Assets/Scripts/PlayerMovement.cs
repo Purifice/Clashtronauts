@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class PlayerMovement : MonoBehaviour
     private bool periodDown;
     private bool isMoving;
 
+    private Vector2 movementInput = Vector2.zero;
+    private bool jumped = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,12 +46,21 @@ public class PlayerMovement : MonoBehaviour
         isJumping = false;
     }
 
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        movementInput = context.ReadValue<Vector2>(); //reads the input value of the L/R movement
+    }
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        jumped = context.action.triggered; //reads whether or not the set jump button has been pressed
+    }
+
     // Update is called once per frame
     void Update()
     {
-        moveHorizontal = Input.GetAxisRaw("Horizontal");
-        moveVertical = Input.GetAxisRaw("Vertical");
-        vertical = Input.GetAxis("Vertical");
+        moveHorizontal = Input.GetAxisRaw("Horizontal"); //for determing if horizontal movement is occuring
+        moveVertical = Input.GetAxisRaw("Vertical"); //for determining if vertical movement is occuring
+        vertical = Input.GetAxis("Vertical"); // for determining a smoother vertical movement occurence
 
        if (Input.GetKeyDown(KeyCode.Period)) //if pressing the period key
         {
@@ -95,6 +107,8 @@ public class PlayerMovement : MonoBehaviour
         {
             //rb2D.AddForce(new Vector2(moveHorizontal * speed, 0f), ForceMode2D.Impulse);
             //The above movement method applies a force constantly as the key is pressed, good for 0g?
+            //rb2D.velocity = new Vector2(movementInput.x * speed, rb2D.velocity.y);
+            //the above calculates movement off the new input system but doesn't return the smoothing of getaxis
             rb2D.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
             animator.SetBool("isWalking", true);
             isMoving = true;
@@ -105,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
             isMoving = false;
         }
 
-        if (!isJumping && moveVertical > 0.1f)
+        if (!isJumping && jumped)
         {
             // rb2D.AddForce(new Vector2(0f, moveVertical * jump), ForceMode2D.Impulse);
             //The above method uses the applying force method

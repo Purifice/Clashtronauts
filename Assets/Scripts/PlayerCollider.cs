@@ -7,6 +7,7 @@ public class PlayerCollider : MonoBehaviour
 
     public PlayerMovement playermovement;
     private bool isDiving;
+    private bool isTurned = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,5 +30,17 @@ public class PlayerCollider : MonoBehaviour
             transform.localPosition = new Vector3(0, 0, 0);
             isDiving = !isDiving;
         }
+
+        if (!playermovement.facingFront && !isTurned)
+        {
+            transform.Rotate(0, 90, 0);
+            isTurned = !isTurned;
+        }
+        else if (playermovement.facingFront && isTurned)
+        {
+            transform.Rotate(0,-90,0);
+            isTurned = !isTurned;
+        }
+
     }
 }

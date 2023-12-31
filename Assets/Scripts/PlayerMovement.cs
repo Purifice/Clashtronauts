@@ -14,10 +14,14 @@ public class PlayerMovement : MonoBehaviour
 
     public float speed;
     public float jump;
+    public float dampener =.1f;
+    
 
-    private float moveHorizontal;
-    private float moveVertical;
+    //private float moveHorizontal;
+    //private float moveVertical;
     private float vertical; //for ladder movement
+    
+
 
     public bool isJumping;
     public bool isLadder; //touching ladder, referenced by external script
@@ -26,13 +30,16 @@ public class PlayerMovement : MonoBehaviour
     public bool facingFront = true; //for ladder directional
 
 
-    private bool facingRight = true;
+    private bool facingRight = true; //always spawns assuming it's facing right
     private bool canFlip = true;
-    private bool periodDown;
+    private bool hasDove;
     private bool isMoving;
+    private bool jumped = false;
+    private bool climbed = false;
+    private bool dove = false;
 
     private Vector2 movementInput = Vector2.zero;
-    private bool jumped = false;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
 
         speed = 12.5f;
         jump = 20f;
+        dampener = .1f;
         isJumping = false;
     }
 
@@ -54,27 +62,35 @@ public class PlayerMovement : MonoBehaviour
     {
         jumped = context.action.triggered; //reads whether or not the set jump button has been pressed
     }
+    public void OnClimb(InputAction.CallbackContext context)
+    {
+        climbed = context.action.triggered;
+    }
+    public void OnDive(InputAction.CallbackContext context)
+    {
+        dove = context.action.triggered;
+    }
 
     // Update is called once per frame
     void Update()
     {
-        moveHorizontal = Input.GetAxisRaw("Horizontal"); //for determing if horizontal movement is occuring
-        moveVertical = Input.GetAxisRaw("Vertical"); //for determining if vertical movement is occuring
+     //   moveHorizontal = Input.GetAxisRaw("Horizontal"); //deprecated
+     //   moveVertical = Input.GetAxisRaw("Vertical"); //deprecated
         vertical = Input.GetAxis("Vertical"); // for determining a smoother vertical movement occurence
 
-       if (Input.GetKeyDown(KeyCode.Period)) //if pressing the period key
+       if (dove) //if pressing the period key
         {
-            periodDown = true;
+            hasDove = true;
             animator.SetBool("isDiving", true); //start animation
             canFlip = false;
         }
         else
         {
-            periodDown = false;
+            hasDove = false;
 
         }
 
-        if (!isJumping && !isClimbing && periodDown) //if on the ground and pressing the dive button
+        if (!isJumping && !isClimbing && hasDove) //if on the ground and pressing the dive button
         {
             isDiving = true;
 
@@ -87,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
                 rb2D.velocity = new Vector2(-12.5f, 15f);
             }
         }
-        else if (isJumping && !isClimbing && periodDown) //if in air while pressing dive button
+        else if (isJumping && !isClimbing && hasDove) //if in air while pressing dive button
         {
             isDiving = true;
 
@@ -97,21 +113,37 @@ public class PlayerMovement : MonoBehaviour
         {
 
         }
+
+        if (dampener < 1)
+        {
+            dampener += 2f * Time.deltaTime;
+        }
+        else if (dampener > 1)
+        {
+            dampener = 1f;
+        }
     }
 
     // Fixed Update is called every fixed-rate frame, and is best for physics
     void FixedUpdate() 
     {
 
-        if (!isDiving && (moveHorizontal > 0f || moveHorizontal < -0f))
+
+        if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f))
         {
             //rb2D.AddForce(new Vector2(moveHorizontal * speed, 0f), ForceMode2D.Impulse);
             //The above movement method applies a force constantly as the key is pressed, good for 0g?
-            //rb2D.velocity = new Vector2(movementInput.x * speed, rb2D.velocity.y);
+            rb2D.velocity = new Vector2(movementInput.x * (dampener * speed), rb2D.velocity.y);
             //the above calculates movement off the new input system but doesn't return the smoothing of getaxis
-            rb2D.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
+            //rb2D.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
             animator.SetBool("isWalking", true);
             isMoving = true;
+        }
+        else if(!isDiving && (movementInput.x <= 0f || movementInput.x >= -0f))
+        {
+            dampener = .1f;
+            animator.SetBool("isWalking", false);
+            isMoving = false;
         }
         else
         {
@@ -136,8 +168,9 @@ public class PlayerMovement : MonoBehaviour
 
       
 
-        if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
-        {
+       // if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
+        if (isLadder && climbed) 
+            {
             isClimbing = true;
             animator.SetBool("isClimbing", true);
 
@@ -179,7 +212,7 @@ public class PlayerMovement : MonoBehaviour
             transform.Rotate(0, 90, 0); //rotate right to face ladder
         }
 
-        if (!facingFront && moveHorizontal < 0 && !isLadder) //if off ladder but still facing it, and moving left
+        if (!facingFront && movementInput.x < 0 && !isLadder) //if off ladder but still facing it, and moving left
         {
             if (!facingRight) //if facing left
             {
@@ -194,7 +227,7 @@ public class PlayerMovement : MonoBehaviour
                 transform.Rotate(0, 90, 0); //rotate right
             }
         }
-        else if (!facingFront && moveHorizontal > 0 && !isLadder) //if off ladder but still facing it, and moving right
+        else if (!facingFront && movementInput.x > 0 && !isLadder) //if off ladder but still facing it, and moving right
         {
             if (facingRight) //if facing right
             {
@@ -237,11 +270,11 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-        if (moveHorizontal < 0 && facingRight && canFlip) //if moving left and facing right and able to flip
+        if (movementInput.x < 0 && facingRight && canFlip) //if moving left and facing right and able to flip
         {
             flip(); //defined in void flip
         }
-        if (moveHorizontal > 0 && !facingRight && canFlip) //if moving right and facing left and able to flip
+        if (movementInput.x > 0 && !facingRight && canFlip) //if moving right and facing left and able to flip
         {
             flip();
         }
@@ -311,6 +344,8 @@ public class PlayerMovement : MonoBehaviour
     {
         facingRight = !facingRight; //prevents flipping loop
         transform.Rotate(0, 180, 0);
+        dampener = .1f;
+
     }
-  
+
 }

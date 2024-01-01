@@ -1321,7 +1321,7 @@ GameObject:
   - component: {fileID: 3002617537560429137}
   m_Layer: 8
   m_Name: Player Prefab
-  m_TagString: Surface
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

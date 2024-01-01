@@ -64,11 +64,11 @@ public class PlayerMovement : MonoBehaviour
     }
     public void OnClimb(InputAction.CallbackContext context)
     {
-        climbed = context.action.triggered;
+        climbed = context.action.triggered; //reads whether or not the climb button is being triggered
     }
     public void OnDive(InputAction.CallbackContext context)
     {
-        dove = context.action.triggered;
+        dove = context.action.triggered; //reads whether or not the dive button is being triggered
     }
 
     // Update is called once per frame
@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
      //   moveVertical = Input.GetAxisRaw("Vertical"); //deprecated
         vertical = Input.GetAxis("Vertical"); // for determining a smoother vertical movement occurence
 
-       if (dove) //if pressing the period key
+       if (dove) //if pressing the dive key
         {
             hasDove = true;
             animator.SetBool("isDiving", true); //start animation
@@ -114,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
-        if (dampener < 1)
+        if (dampener < 1) // gradually unlimits the movement speed for a smooth acceleration
         {
             dampener += 2f * Time.deltaTime;
         }

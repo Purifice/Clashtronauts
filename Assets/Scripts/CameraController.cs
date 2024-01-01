@@ -19,6 +19,8 @@ public class CameraController : MonoBehaviour
 
     private Camera mainCamera;
 
+    public static CameraController instance = null;
+
     
     // Start is called before the first frame update
     void Start()
@@ -41,7 +43,14 @@ public class CameraController : MonoBehaviour
          );
     }
 
-    private void Awake() => mainCamera = Camera.main;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        mainCamera = Camera.main;
+    }
    
 
     // Update is called once per frame
@@ -71,14 +80,18 @@ public class CameraController : MonoBehaviour
             transform.position = targetPosition;
         }
 
-        
     }
 
     IEnumerator CameraStartDelay()
     {
-        yield return new WaitForSeconds(0.1f);
-        playerOne = PlayerSpawnManager.instance.playerList[0].gameObject.transform;
-        transform.position = playerOne.transform.position + offset;
+        yield return new WaitForSeconds(0.2f);
+        SetCamera();
+    }
+
+    public void SetCamera()
+    {
+        CameraController.instance.playerOne = PlayerSpawnManager.instance.playerList[0].gameObject.transform; //sets "player one" transform value to the first item in the player list instance
+        transform.position = CameraController.instance.playerOne.transform.position + CameraController.instance.offset; //moves camera to player 1's position
     }
 
     Vector3 FindCentroid()

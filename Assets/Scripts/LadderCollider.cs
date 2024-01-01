@@ -7,18 +7,6 @@ public class LadderCollider : MonoBehaviour
   
     public PlayerMovement playermovement;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     void OnTriggerStay(Collider collision)
     {
         if (collision.gameObject.tag == "Ladder") //if touching ladder

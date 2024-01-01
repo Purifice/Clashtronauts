@@ -6,26 +6,92 @@ using UnityEngine.InputSystem;
 public class PlayerSpawnManager : MonoBehaviour
 {
     public Transform[] spawnLocations;
+    public static PlayerSpawnManager instance = null;
+    public List<PlayerInput> playerList = new List<PlayerInput>();
+    public event System.Action <PlayerInput> PlayerJoinedGame;
+    public event System.Action<PlayerInput> PlayerLeftGame;
+    [SerializeField] InputAction joinAction;
+    [SerializeField] InputAction leaveAction;
+
+
     void OnPlayerJoined(PlayerInput playerInput)
     {
-        Debug.Log("PlayerInput ID:" + playerInput.playerIndex);
+        Debug.Log("PlayerInput ID:" + playerInput.playerIndex + "Joined the Game!");
 
         playerInput.gameObject.GetComponent<PlayerDetails>().playerID = playerInput.playerIndex + 1;
 
         playerInput.gameObject.GetComponent<PlayerDetails>().startPos = spawnLocations[playerInput.playerIndex].position;
 
         playerInput.gameObject.GetComponent<PlayerDetails>().startRot = spawnLocations[playerInput.playerIndex].rotation;
+
+        playerList.Add(playerInput);
+
+        if (PlayerJoinedGame != null)
+        {
+            PlayerJoinedGame(playerInput);
+        }
+    }
+    void OnPlayerLeft(PlayerInput playerInput)
+    {
+        Debug.Log("PlayerInput ID:" + playerInput.playerIndex + "Left the Game");
+
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != null)
+        {
+            Destroy(gameObject);
+        }
+
+        joinAction.Enable();
+        joinAction.performed += context => JoinAction(context);
+
+        leaveAction.Enable();
+        leaveAction.performed += context => LeaveAction(context);
+
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start() //currently joining player 1 in start function
     {
+        PlayerInputManager.instance.JoinPlayer(0, -1, null); //looks for player index, splitscreen index, controlscheme index, and input device
+    }
+
+    void JoinAction (InputAction.CallbackContext context)
+    {
+        PlayerInputManager.instance.JoinPlayerFromActionIfNotAlreadyJoined(context);
+    }
+    void LeaveAction(InputAction.CallbackContext context)
+    {
+        if(playerList.Count > 1)
+        {
+            foreach( var player in playerList)
+            {
+                foreach (var device in player.devices)
+                {
+                    if (device != null && context.control.device == device)
+                    {
+                        UnregisterPlayer(player);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    void UnregisterPlayer(PlayerInput playerInput )
+    {
+        playerList.Remove(playerInput);
         
+        if (PlayerLeftGame != null)
+        {
+            PlayerLeftGame(playerInput);
+        }
+
+        Destroy(playerInput.gameObject);
     }
 }

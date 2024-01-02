@@ -17,8 +17,14 @@ public class Carriables : MonoBehaviour
         if (transform.parent != null)
         {
             rb2D.velocity = new Vector2(0, 0);
-            Debug.Log("Working!");
+            transform.gameObject.tag = "Untagged";
+            transform.gameObject.layer = 6;
 
+        }
+        else if (transform.parent == null)
+        {
+            transform.gameObject.tag = "Surface";
+            transform.gameObject.layer = 7;
         }
     }
 }

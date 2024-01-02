@@ -28,6 +28,9 @@ public class PlayerMovement : MonoBehaviour
     public bool isClimbing;
     public bool isDiving;
     public bool facingFront = true; //for ladder directional
+    public bool carryButton = false;
+    public bool dove = false;
+
 
 
     private bool facingRight = true; //always spawns assuming it's facing right
@@ -36,7 +39,6 @@ public class PlayerMovement : MonoBehaviour
     private bool isMoving;
     private bool jumped = false;
     private bool climbed = false;
-    private bool dove = false;
 
     private Vector2 movementInput = Vector2.zero;
     
@@ -70,6 +72,10 @@ public class PlayerMovement : MonoBehaviour
     {
         dove = context.action.triggered; //reads whether or not the dive button is being triggered
     }
+    public void OnCarry(InputAction.CallbackContext context)
+    {
+        carryButton = context.action.triggered; //reads whether or not the carry button is being triggered
+    }
 
     // Update is called once per frame
     void Update()
@@ -82,6 +88,7 @@ public class PlayerMovement : MonoBehaviour
         {
             hasDove = true;
             animator.SetBool("isDiving", true); //start animation
+
             canFlip = false;
         }
         else

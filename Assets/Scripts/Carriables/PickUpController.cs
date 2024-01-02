@@ -16,7 +16,7 @@ public class PickUpController : MonoBehaviour
     [SerializeField]
     private float rayDistance;
 
-    private GameObject grabbedObject;
+    public GameObject grabbedObject;
 
     private int layerIndex;
 
@@ -53,7 +53,7 @@ public class PickUpController : MonoBehaviour
         
         if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex)
         {
-            if (Keyboard.current.spaceKey.wasPressedThisFrame && grabbedObject == null)
+            if (playermovement.carryButton && grabbedObject == null) //if button to carry is pressed and nothing is grabbed
             {
                 grabbedObject = hitInfo.collider.gameObject;
                 grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true;
@@ -61,22 +61,33 @@ public class PickUpController : MonoBehaviour
                 grabbedObject.transform.SetParent(transform);
                 equipped = true;
 
-                Physics2D.IgnoreLayerCollision(7, 8, true);
+                Physics2D.IgnoreLayerCollision(6, 8, true);
                 animator.SetBool("isCarrying", true);
 
             }
-            else if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            else if (playermovement.carryButton) //if button to carry is pressed and something is grabbed
             {
                 grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
                 grabbedObject.transform.SetParent(null);
                 grabbedObject = null;
                 equipped = false;
 
-                Physics2D.IgnoreLayerCollision(7, 8, false);
+                Physics2D.IgnoreLayerCollision(6, 8, false);
                 animator.SetBool("isCarrying", false);
             }
         }
 
+        if (equipped && playermovement.dove)
+        {
+            grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
+            grabbedObject.transform.SetParent(null);
+            grabbedObject = null;
+            equipped = false;
+
+            Physics2D.IgnoreLayerCollision(7, 8, false);
+            animator.SetBool("isCarrying", false);
+
+        }
         Debug.DrawRay(rayPoint.position, transform.right * rayDistance);
     }
 }

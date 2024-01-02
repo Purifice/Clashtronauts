@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour
     Vector3 gizmoPos;
     private Vector3 targetPosition;
 
-    public float smoothSpeed = 5f;
+    public float smoothSpeed = 3f;
 
     private Bounds cameraBounds;
 
@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        smoothSpeed = 5f;
+        smoothSpeed = 3f;
         StartCoroutine(CameraStartDelay());
         var height = mainCamera.orthographicSize;
         var width = height * mainCamera.aspect;
@@ -62,7 +62,7 @@ public class CameraController : MonoBehaviour
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
             transform.position = smoothedPosition;
 
-            targetPosition = playerOne.transform.position + offset;
+            targetPosition = smoothedPosition;
             targetPosition = GetCameraBounds();
 
             transform.position = targetPosition;
@@ -74,7 +74,7 @@ public class CameraController : MonoBehaviour
             transform.position = smoothedPosition;
             gizmoPos = FindCentroid();
 
-            targetPosition = FindCentroid() + offset;
+            targetPosition = smoothedPosition;
             targetPosition = GetCameraBounds();
 
             transform.position = targetPosition;
@@ -85,13 +85,22 @@ public class CameraController : MonoBehaviour
     IEnumerator CameraStartDelay()
     {
         yield return new WaitForSeconds(0.2f);
-        SetCamera();
+        if (PlayerSpawnManager.instance.playerList.Count < 0)
+        {
+            SetCamera();
+        }
     }
 
     public void SetCamera()
     {
-        CameraController.instance.playerOne = PlayerSpawnManager.instance.playerList[0].gameObject.transform; //sets "player one" transform value to the first item in the player list instance
-        transform.position = CameraController.instance.playerOne.transform.position + CameraController.instance.offset; //moves camera to player 1's position
+        CameraController.instance.playerOne = PlayerSpawnManager.instance.playerList[0].gameObject.transform;
+        //sets "player one" transform value to the first item in the player list instance
+
+        if (PlayerSpawnManager.instance.playerList.Count < 2)
+        {
+            transform.position = CameraController.instance.playerOne.transform.position + CameraController.instance.offset;
+            //moves camera to player 1's position
+        }
     }
 
     Vector3 FindCentroid()

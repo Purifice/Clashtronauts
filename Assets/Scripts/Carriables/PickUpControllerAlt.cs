@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickUpController : MonoBehaviour
+public class PickUpControllerAlt : MonoBehaviour
 {
 
     public PlayerMovement playermovement;
@@ -52,6 +52,7 @@ public class PickUpController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         Vector3 distanceToPlayer = player.position - transform.position;
         if (!equipped && distanceToPlayer.magnitude <= PickUpRange && Input.GetKeyDown(KeyCode.Slash) && !slotFull)
         {

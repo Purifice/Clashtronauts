@@ -8,6 +8,8 @@ public class CameraController : MonoBehaviour
 
     public Transform playerOne;
 
+    private bool onPlayer = false;
+
     public Vector3 offset;
 
     Vector3 gizmoPos;
@@ -66,6 +68,8 @@ public class CameraController : MonoBehaviour
             targetPosition = GetCameraBounds();
 
             transform.position = targetPosition;
+
+            onPlayer = true;
         }
         else if (PlayerSpawnManager.instance.playerList.Count >= 2)
         {
@@ -78,6 +82,8 @@ public class CameraController : MonoBehaviour
             targetPosition = GetCameraBounds();
 
             transform.position = targetPosition;
+
+            onPlayer = false;
         }
 
     }
@@ -96,7 +102,7 @@ public class CameraController : MonoBehaviour
         CameraController.instance.playerOne = PlayerSpawnManager.instance.playerList[0].gameObject.transform;
         //sets "player one" transform value to the first item in the player list instance
 
-        if (PlayerSpawnManager.instance.playerList.Count < 2)
+        if (!onPlayer && PlayerSpawnManager.instance.playerList.Count < 2)
         {
             transform.position = CameraController.instance.playerOne.transform.position + CameraController.instance.offset;
             //moves camera to player 1's position

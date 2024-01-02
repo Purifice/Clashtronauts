@@ -74,7 +74,6 @@ public class PlayerSpawnManager : MonoBehaviour
         PlayerInputManager.instance.JoinPlayerFromActionIfNotAlreadyJoined(context);
         CameraController.instance.SetCamera();
 
-
     }
     void LeaveAction(InputAction.CallbackContext context)
     {

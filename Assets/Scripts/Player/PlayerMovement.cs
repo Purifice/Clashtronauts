@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
 {
 
     private Rigidbody2D rb2D;
-    private Animator animator;
+    public Animator animator;
 
 
     public float speed;
@@ -30,15 +30,16 @@ public class PlayerMovement : MonoBehaviour
     public bool facingFront = true; //for ladder directional
     public bool carryButton = false;
     public bool dove = false;
+    public bool canFlip = true;
 
 
 
     private bool facingRight = true; //always spawns assuming it's facing right
-    private bool canFlip = true;
     private bool hasDove;
     private bool isMoving;
     private bool jumped = false;
     private bool climbed = false;
+    public bool notGrounded;
 
     private Vector2 movementInput = Vector2.zero;
     
@@ -173,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-      
+    
 
        // if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
         if (isLadder && climbed) 
@@ -296,6 +297,7 @@ public class PlayerMovement : MonoBehaviour
             isJumping = false; //allow for jumping
             isDiving = false; //allow for normal movement
             speed = 12.5f; //default ground movement speed
+            notGrounded = false;
             animator.SetBool("isInAir", false);
             animator.SetBool("isDiving", false);
             if (!isClimbing)
@@ -319,12 +321,30 @@ public class PlayerMovement : MonoBehaviour
 
             }
         }
+
+        if(collision.gameObject.tag == "Player")
+        {
+            isJumping = false; //allow for jumping
+            isDiving = false; //allow for normal movement
+            speed = 12.5f; //default ground movement speed
+            animator.SetBool("isInAir", false);
+            animator.SetBool("isDiving", false);
+            if (!isClimbing)
+            {
+                canFlip = true;
+            }
+        }
+
+        if (collision.gameObject.tag != "Surface")
+        {
+            notGrounded = true;
+        }
     }
 
     void OnTriggerExit2D(Collider2D collision) //upon Collider2D no longer activating a trigger collision
     {
 
-        if (collision.gameObject.tag == "Surface") //if colliding with the surface
+        if (collision.gameObject.tag == "Surface") //if exiting with the surface
         {
             
             if (collision.gameObject.tag == "Wall") //if exiting both surface and wall
@@ -339,7 +359,18 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetBool("isInAir", true);
                 speed = 10f; 
             }
+
         }
+        else if (collision.gameObject.tag == "Player" && collision.gameObject.tag != "Surface" && notGrounded)
+        {
+            isJumping = true;
+            animator.SetBool("isInAir", true);
+            speed = 10f;
+
+        }
+
+
+
         else if (collision.gameObject.tag == "Wall") // exiting a collision with the wall, not the surface - regardless of whether on surface or not
         {
               speed = 12.5f;

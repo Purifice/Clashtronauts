@@ -18,25 +18,38 @@ public class PickUpController : MonoBehaviour
 
     private Animator animator;
 
+    private int layerIndex;
+    private int altLayerIndex;
+
+    private Rigidbody2D rigidbody2;
+    private Rigidbody2D rb2D;
+
+    private float dropForwardForce;
+    private float dropUpwardForce;
+
+
+
+
+
+    public Vector2 playermomentum;
+
     public GameObject grabbedObject;
 
     public PlayerMovement playermovement;
 
-
-    private int layerIndex;
-    private int altLayerIndex;
-
     public bool equipped = false;
 
-    
+
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
-       
+        rb2D = GetComponentInParent<Rigidbody2D>();
+        dropForwardForce = 2f;
+        dropUpwardForce = .75f;
+
         layerIndex = LayerMask.NameToLayer("Pickables"); //sets "layerIndex" as the integer value representation of the Pickables layer
         altLayerIndex = LayerMask.NameToLayer("Grabbed");
 
@@ -58,15 +71,16 @@ public class PickUpController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        RaycastHit2D hitInfo = Physics2D.Raycast(rayPoint.position, transform.right, rayDistance); //sets the ray to the specified rayPoint object on the player
-        
-        if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex) 
+        playermomentum = rb2D.velocity;
+
+        RaycastHit2D hitInfo = Physics2D.Raycast(rayPoint.position, transform.position, rayDistance);
+        //sets the ray to the specified rayPoint object on the player
+
+        if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex)
         //if hitting something, and if that thing is what's specified in layerIndex (the Pickables layer)
         {
             if (playermovement.carryButton && grabbedObject == null) //if button to carry is pressed and nothing is grabbed
             {
-                Debug.Log("That");
-
                 Physics2D.IgnoreLayerCollision(6, 8, true);
                 Physics2D.IgnoreLayerCollision(7, 8, true);
 
@@ -76,6 +90,7 @@ public class PickUpController : MonoBehaviour
                 grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true; //turn it to kinematic
                 grabbedObject.transform.localPosition = grabPoint.position; //move it to the grabpoint position
                 grabbedObject.transform.SetParent(transform); //set the parent of the grabbedObjects transform to it's transform position
+                rigidbody2 = GetComponentInChildren<Rigidbody2D>();
                 equipped = true;
 
 
@@ -85,18 +100,18 @@ public class PickUpController : MonoBehaviour
                 Drop();
             }*/
         }
-        
-        if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == altLayerIndex) 
-        //if colliding with the "Grabbed" layer 
+
+        //if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == altLayerIndex)
+        //above gave issues dropping because hitinfo was detecting camera bounds not the sphere
+        if(equipped)
         {
-            if (playermovement.carryButton && grabbedObject != null) //allow dropping if carrying something
+            if (Input.GetKeyDown(KeyCode.Comma) && grabbedObject != null) //allow dropping if carrying something
             {
-                Debug.Log("This");
                 Drop();
             }
         }
 
-       if (equipped && playermovement.dove) //drop upon diving function
+        if (equipped && playermovement.dove) //drop upon diving function
         {
             Drop();
         }
@@ -106,27 +121,23 @@ public class PickUpController : MonoBehaviour
             Drop();
         }
 
-
-       // Debug.DrawRay(rayPoint.position, transform.right * rayDistance);
+         //Debug.DrawRay(rayPoint.position, transform.right * rayDistance);
+         //Debug.Log(hitInfo.collider);
     }
-
-  /* void PickUp()
-    {
-
-    }*/
 
     void Drop()
     {
-        //Physics2D.IgnoreLayerCollision(6, 8, false);
         Physics2D.IgnoreLayerCollision(7, 8, false);
-
         animator.SetBool("isCarrying", false);
-
         grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
+        rigidbody2.AddForce(new Vector2(playermomentum.x * dropForwardForce, 0f), ForceMode2D.Impulse);
+        rigidbody2.AddForce(new Vector2(0f, playermomentum.y * dropUpwardForce), ForceMode2D.Impulse);
+
         grabbedObject.transform.SetParent(null);
         grabbedObject = null;
+        rigidbody2 = GetComponentInChildren<Rigidbody2D>();
         equipped = false;
-
+       
         
 
         /* rb2D.velocity = player.GetComponent<Rigidbody2D>().velocity;

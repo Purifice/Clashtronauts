@@ -25,6 +25,7 @@ public class Carriables : MonoBehaviour
         {
             transform.gameObject.tag = "Surface";
             transform.gameObject.layer = 7;
+
         }
     }
 }

@@ -23,7 +23,7 @@ public class Carriables : MonoBehaviour
         }
         else if (transform.parent == null)
         {
-            transform.gameObject.tag = "Surface";
+            transform.gameObject.tag = "Player";
             transform.gameObject.layer = 7;
 
         }

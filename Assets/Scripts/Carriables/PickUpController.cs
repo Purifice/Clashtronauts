@@ -103,7 +103,7 @@ public class PickUpController : MonoBehaviour
 
         //if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == altLayerIndex)
         //above gave issues dropping because hitinfo was detecting camera bounds not the sphere
-        if(equipped)
+        if(!playermovement.isClimbing && equipped && playermovement.facingFront)
         {
             if (Input.GetKeyDown(KeyCode.Comma) && grabbedObject != null) //allow dropping if carrying something
             {

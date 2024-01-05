@@ -361,20 +361,29 @@ public class PlayerMovement : MonoBehaviour
             }
 
         }
-        else if (collision.gameObject.tag == "Player" && collision.gameObject.tag != "Surface" && notGrounded)
+
+        else if (collision.gameObject.tag == "Wall") // exiting a collision with the wall, not the surface - regardless of whether on surface or not
+        {
+            speed = 12.5f;
+        }
+
+        if (collision.gameObject.tag == "Player" && collision.gameObject.tag != "Surface" && notGrounded)
         {
             isJumping = true;
             animator.SetBool("isInAir", true);
             speed = 10f;
 
         }
-
-
-
-        else if (collision.gameObject.tag == "Wall") // exiting a collision with the wall, not the surface - regardless of whether on surface or not
+        else if (collision.gameObject.tag  == "Player" && !notGrounded)
         {
-              speed = 12.5f;
+            isJumping = false;
+            animator.SetBool("isInAir", false);
+            speed = 12.5f;
+
+
         }
+
+
 
     }
 

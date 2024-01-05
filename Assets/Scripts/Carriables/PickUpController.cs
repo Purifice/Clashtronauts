@@ -16,16 +16,20 @@ public class PickUpController : MonoBehaviour
     [SerializeField]
     private float rayDistance;
 
+    private Animator animator;
+
     public GameObject grabbedObject;
+
+    public PlayerMovement playermovement;
+
 
     private int layerIndex;
     private int altLayerIndex;
 
     public bool equipped = false;
 
-    public PlayerMovement playermovement;
+    
 
-    private Animator animator;
 
 
     // Start is called before the first frame update
@@ -61,14 +65,19 @@ public class PickUpController : MonoBehaviour
         {
             if (playermovement.carryButton && grabbedObject == null) //if button to carry is pressed and nothing is grabbed
             {
-                grabbedObject = hitInfo.collider.gameObject;
-                grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true;
-                grabbedObject.transform.position = grabPoint.position;
-                grabbedObject.transform.SetParent(transform);
-                equipped = true;
+                Debug.Log("That");
 
                 Physics2D.IgnoreLayerCollision(6, 8, true);
+                Physics2D.IgnoreLayerCollision(7, 8, true);
+
                 animator.SetBool("isCarrying", true);
+
+                grabbedObject = hitInfo.collider.gameObject; //set the grabbed object to what's being raydetected
+                grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true; //turn it to kinematic
+                grabbedObject.transform.localPosition = grabPoint.position; //move it to the grabpoint position
+                grabbedObject.transform.SetParent(transform); //set the parent of the grabbedObjects transform to it's transform position
+                equipped = true;
+
 
             }
             /*else if (playermovement.carryButton) //if button to carry is pressed and something is grabbed
@@ -82,6 +91,7 @@ public class PickUpController : MonoBehaviour
         {
             if (playermovement.carryButton && grabbedObject != null) //allow dropping if carrying something
             {
+                Debug.Log("This");
                 Drop();
             }
         }
@@ -107,13 +117,28 @@ public class PickUpController : MonoBehaviour
 
     void Drop()
     {
+        //Physics2D.IgnoreLayerCollision(6, 8, false);
+        Physics2D.IgnoreLayerCollision(7, 8, false);
+
+        animator.SetBool("isCarrying", false);
+
         grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
         grabbedObject.transform.SetParent(null);
         grabbedObject = null;
         equipped = false;
 
-        Physics2D.IgnoreLayerCollision(6, 8, false);
-        animator.SetBool("isCarrying", false);
+        
+
+        /* rb2D.velocity = player.GetComponent<Rigidbody2D>().velocity;
+
+         rb2D.AddForce(playermomentum.forward * dropForwardForce * -10f, ForceMode2D.Impulse);
+         rb2D.AddForce(playermomentum.up * dropUpwardForce, ForceMode2D.Impulse);
+
+
+             public Transform player;
+
+         */
+
     }
 
 }

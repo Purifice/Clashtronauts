@@ -1416,6 +1416,7 @@ MonoBehaviour:
   isDiving: 0
   facingFront: 1
   carryButton: 0
+  throwButton: 0
   dove: 0
   canFlip: 1
   notGrounded: 0
@@ -1565,6 +1566,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 057208dc-1e3e-4b84-9ffe-4ee8939b8f82
     m_ActionName: Player 1/Carry/Throw[/Keyboard/slash,/DualShock4GamepadHID/buttonEast]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3002617537560429136}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: OnThrow
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 519eeea7-86a1-434b-ad21-403c9def7938
+    m_ActionName: Player 1/Throw[/Keyboard/slash]
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player 1

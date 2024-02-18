@@ -27,7 +27,7 @@ public class CarriableContainer : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!playermovement.facingFront)
         {
@@ -36,6 +36,7 @@ public class CarriableContainer : MonoBehaviour
        
         else if (playermovement.facingFront)
         {
+
             if (!playermovement.isJumping)
             {
                 transform.localPosition = new Vector3(.8f, -.35f, 0);
@@ -46,13 +47,13 @@ public class CarriableContainer : MonoBehaviour
             }
         }
 
-        if (pickupcontroller.equipped)
+        if (pickupcontroller.equipped && playermovement.facingFront)
         {
             collA.enabled = true;
             collB.enabled = true;
 
         }
-        else if (!pickupcontroller.equipped)
+        else if (!pickupcontroller.equipped || !playermovement.facingFront)
         {
             collA.enabled = false;
             collB.enabled = false;

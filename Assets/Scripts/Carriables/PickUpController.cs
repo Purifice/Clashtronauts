@@ -15,6 +15,7 @@ public class PickUpController : MonoBehaviour
 
     [SerializeField]
     private float rayDistance;
+    
 
     private Animator animator;
 
@@ -26,8 +27,6 @@ public class PickUpController : MonoBehaviour
 
     private float dropForwardForce;
     private float dropUpwardForce;
-
-
 
 
 
@@ -46,6 +45,7 @@ public class PickUpController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         rb2D = GetComponentInParent<Rigidbody2D>();
         dropForwardForce = 2f;
         dropUpwardForce = .75f;
@@ -68,61 +68,60 @@ public class PickUpController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        playermomentum = rb2D.velocity;
 
+        playermomentum = rb2D.velocity;
         RaycastHit2D hitInfo = Physics2D.Raycast(rayPoint.position, transform.position, rayDistance);
         //sets the ray to the specified rayPoint object on the player
 
-        if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex)
-        //if hitting something, and if that thing is what's specified in layerIndex (the Pickables layer)
-        {
-            if (playermovement.carryButton && grabbedObject == null) //if button to carry is pressed and nothing is grabbed
+            if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex)
+            //if hitting something, and if that thing is what's specified in layerIndex (the Pickables layer)
             {
-                Physics2D.IgnoreLayerCollision(6, 8, true);
-                Physics2D.IgnoreLayerCollision(7, 8, true);
+                if (playermovement.carryButton && grabbedObject == null) //if button to carry is pressed and nothing is grabbed
+                {
+                    Physics2D.IgnoreLayerCollision(6, 8, true);
+                    Physics2D.IgnoreLayerCollision(7, 8, true);
 
-                animator.SetBool("isCarrying", true);
+                    animator.SetBool("isCarrying", true);
 
-                grabbedObject = hitInfo.collider.gameObject; //set the grabbed object to what's being raydetected
-                grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true; //turn it to kinematic
-                grabbedObject.transform.localPosition = grabPoint.position; //move it to the grabpoint position
-                grabbedObject.transform.SetParent(transform); //set the parent of the grabbedObjects transform to it's transform position
-                rigidbody2 = GetComponentInChildren<Rigidbody2D>();
-                equipped = true;
+                    grabbedObject = hitInfo.collider.gameObject; //set the grabbed object to what's being raydetected
+                    grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true; //turn it to kinematic
+                    grabbedObject.transform.localPosition = grabPoint.position; //move it to the grabpoint position
+                    grabbedObject.transform.SetParent(transform); //set the parent of the grabbedObjects transform to it's transform position
+                    rigidbody2 = GetComponentInChildren<Rigidbody2D>();
+                    equipped = true;
 
 
+                }
+                /*else if (playermovement.carryButton) //if button to carry is pressed and something is grabbed
+                {
+                    Drop();
+                }*/
             }
-            /*else if (playermovement.carryButton) //if button to carry is pressed and something is grabbed
+
+            //if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == altLayerIndex)
+            //above gave issues dropping because hitinfo was detecting camera bounds not the sphere
+            if (!playermovement.isClimbing && equipped && playermovement.facingFront)
+            {
+                if (playermovement.carryButton && grabbedObject != null && equipped) //allow dropping if carrying something
+                {
+                    Drop();
+                }
+            }
+
+            if (equipped && playermovement.dove) //drop upon diving function
             {
                 Drop();
-            }*/
-        }
+            }
 
-        //if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == altLayerIndex)
-        //above gave issues dropping because hitinfo was detecting camera bounds not the sphere
-        if(!playermovement.isClimbing && equipped && playermovement.facingFront)
-        {
-            if (Input.GetKeyDown(KeyCode.Comma) && grabbedObject != null) //allow dropping if carrying something
+            if (equipped && transform.childCount < 0) //drop upon no longer possessing the carriable
             {
                 Drop();
             }
-        }
 
-        if (equipped && playermovement.dove) //drop upon diving function
-        {
-            Drop();
-        }
-
-        if (transform.childCount < 0) //drop upon no longer possessing the carriable
-        {
-            Drop();
-        }
-
-         //Debug.DrawRay(rayPoint.position, transform.right * rayDistance);
-         //Debug.Log(hitInfo.collider);
+            //Debug.DrawRay(rayPoint.position, transform.right * rayDistance);
+            //Debug.Log(hitInfo.collider);        
     }
 
     void Drop()

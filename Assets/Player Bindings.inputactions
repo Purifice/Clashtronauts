@@ -42,13 +42,22 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Carry/Throw",
+                    "name": "Carry",
                     "type": "Button",
                     "id": "057208dc-1e3e-4b84-9ffe-4ee8939b8f82",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Throw",
+                    "type": "Value",
+                    "id": "519eeea7-86a1-434b-ad21-403c9def7938",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -290,7 +299,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "Carry/Throw",
+                    "action": "Carry",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -301,7 +310,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
-                    "action": "Carry/Throw",
+                    "action": "Carry",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a3cb1e8f-cae6-41a5-aea8-27d1f7d47720",
+                    "path": "<Keyboard>/comma",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Throw",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e6cb2f27-5742-44b3-be38-7f151f7b00a6",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Throw",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

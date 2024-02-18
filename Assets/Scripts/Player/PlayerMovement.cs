@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     public bool isDiving;
     public bool facingFront = true; //for ladder directional
     public bool carryButton = false;
+    public bool throwButton = false;
     public bool dove = false;
     public bool canFlip = true;
 
@@ -40,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
     private bool jumped = false;
     private bool climbed = false;
     public bool notGrounded;
+
 
     private Vector2 movementInput = Vector2.zero;
     
@@ -76,6 +78,10 @@ public class PlayerMovement : MonoBehaviour
     public void OnCarry(InputAction.CallbackContext context)
     {
         carryButton = context.action.triggered; //reads whether or not the carry button is being triggered
+    }
+    public void OnThrow(InputAction.CallbackContext context)
+    {
+        throwButton = context.action.triggered; //reads whether or not the carry button is being triggered
     }
 
     // Update is called once per frame

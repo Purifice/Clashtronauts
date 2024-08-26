@@ -208,6 +208,7 @@ MonoBehaviour:
   grabbedObject: {fileID: 0}
   playermovement: {fileID: 3002617537560429136}
   equipped: 0
+  buffer: 0.1
 --- !u!61 &7805936721961841867
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1416,7 +1417,7 @@ MonoBehaviour:
   isDiving: 0
   facingFront: 1
   carryButton: 0
-  throwButton: 0
+  interactButton: 0
   dove: 0
   canFlip: 1
   notGrounded: 0
@@ -1570,7 +1571,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3002617537560429136}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
-        m_MethodName: OnThrow
+        m_MethodName: OnInteract
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

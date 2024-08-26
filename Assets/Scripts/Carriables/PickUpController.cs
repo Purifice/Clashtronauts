@@ -104,7 +104,7 @@ public class PickUpController : MonoBehaviour
             //above gave issues dropping because hitinfo was detecting camera bounds not the sphere
             if (!playermovement.isClimbing && equipped && playermovement.facingFront)
             {
-                if (playermovement.carryButton && grabbedObject != null && equipped) //allow dropping if carrying something
+                if (playermovement.throwButton && grabbedObject != null && equipped) //allow dropping if carrying something
                 {
                     Drop();
                 }

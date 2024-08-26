@@ -38,6 +38,8 @@ public class PickUpController : MonoBehaviour
 
     public bool equipped = false;
 
+    public float buffer = .1f;
+
 
 
 
@@ -66,11 +68,33 @@ public class PickUpController : MonoBehaviour
             //coll.isTrigger = true;
             Physics2D.IgnoreLayerCollision(7, 8, true);
         }
+
+        buffer = .1f;
     }
 
     void Update()
     {
-
+        if (buffer < 1 && equipped) //If the carry/throw time buffer hasn't started and something is equipped
+            {
+                buffer += 2f * Time.deltaTime; //gradually increase the buffer over time
+             }
+        if (buffer >= 1) // If the buffer has fully finished
+            {
+                buffer = 1f; //set it to its finished actionable state (can be thrown)
+            }
+        if (buffer == 1 && !equipped && playermovement.carryButton) //if the buffer has finished and the player has nothing equipped but is still pressing carry
+        {
+            buffer = .5f; //set the buffer to a non-actionable state (cannot carry or throw)
+        }
+        if (buffer <1 && buffer > .1 && !equipped) //then if the buffer is in a non-actionable state range
+        {
+            buffer -= 1.1f *Time.deltaTime; //gradually decrease the buffer over time
+        }
+        if (buffer <=.1) //then if the buffer has fully reset
+        {
+            buffer = .1f; //set it to its starting acitonable state (can be picked up)
+        }
+    
         playermomentum = rb2D.velocity;
         RaycastHit2D hitInfo = Physics2D.Raycast(rayPoint.position, transform.position, rayDistance);
         //sets the ray to the specified rayPoint object on the player
@@ -78,7 +102,7 @@ public class PickUpController : MonoBehaviour
             if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex)
             //if hitting something, and if that thing is what's specified in layerIndex (the Pickables layer)
             {
-                if (playermovement.carryButton && grabbedObject == null) //if button to carry is pressed and nothing is grabbed
+                if (playermovement.carryButton && grabbedObject == null && buffer ==.1f) //if button to carry is pressed and nothing is grabbed and buffer is reset
                 {
                     Physics2D.IgnoreLayerCollision(6, 8, true);
                     Physics2D.IgnoreLayerCollision(7, 8, true);
@@ -104,7 +128,7 @@ public class PickUpController : MonoBehaviour
             //above gave issues dropping because hitinfo was detecting camera bounds not the sphere
             if (!playermovement.isClimbing && equipped && playermovement.facingFront)
             {
-                if (playermovement.throwButton && grabbedObject != null && equipped) //allow dropping if carrying something
+                if (playermovement.carryButton && grabbedObject != null && equipped && buffer == 1f) //allow dropping if carrying something and the buffer has hit max
                 {
                     Drop();
                 }
@@ -129,6 +153,8 @@ public class PickUpController : MonoBehaviour
         Physics2D.IgnoreLayerCollision(7, 8, false);
         animator.SetBool("isCarrying", false);
         grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
+        Debug.Log(playermomentum); /* when diving the below code plays only once, due to the drop function triggering once cleanly. When throwing it plays numerous 
+        times very quickly, causing the carried momentum to be multiple times what its supposed to be, but why only when not jumping? */
         rigidbody2.AddForce(new Vector2(playermomentum.x * dropForwardForce, 0f), ForceMode2D.Impulse);
         rigidbody2.AddForce(new Vector2(0f, playermomentum.y * dropUpwardForce), ForceMode2D.Impulse);
 
@@ -136,7 +162,6 @@ public class PickUpController : MonoBehaviour
         grabbedObject = null;
         rigidbody2 = GetComponentInChildren<Rigidbody2D>();
         equipped = false;
-       
         
 
         /* rb2D.velocity = player.GetComponent<Rigidbody2D>().velocity;

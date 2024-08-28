@@ -9,7 +9,7 @@ public class ZCollider : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        targetPosition = Quaternion.Euler (45, -90, 0);
+        //targetPosition = Quaternion.Euler (45, -90, 0);
     }
 
     // Update is called once per frame

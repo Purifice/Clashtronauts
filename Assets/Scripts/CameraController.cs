@@ -43,7 +43,7 @@ public class CameraController : MonoBehaviour
         var maxY = Globals.WorldBounds.extents.y - height;
 
         var minZ = Globals.WorldBounds.min.z;
-        var maxZ = Globals.WorldBounds.extents.z;
+        var maxZ = Globals.WorldBounds.max.z;
 
         cameraBounds = new Bounds();
         cameraBounds.SetMinMax(
@@ -149,20 +149,20 @@ public class CameraController : MonoBehaviour
         
         if (PlayerSpawnManager.instance.playerList.Count == 2)
         {
-            totalZ -= (Mathf.Abs(playerOne.transform.position.x - playerTwo.transform.position.x) 
-            + Mathf.Abs(playerOne.transform.position.y - playerTwo.transform.position.y)); 
+            totalZ -= Mathf.Abs(playerOne.transform.position.x - playerTwo.transform.position.x) 
+            + Mathf.Abs(playerOne.transform.position.y - playerTwo.transform.position.y); 
         }
 
         if (PlayerSpawnManager.instance.playerList.Count == 3)
         {
-            totalZ -= (Mathf.Abs(playerOne.transform.position.x - playerTwo.transform.position.x - playerThree.transform.position.x) 
-            + Mathf.Abs(playerOne.transform.position.y - playerTwo.transform.position.y - playerThree.transform.position.y)); 
+            totalZ -= Mathf.Abs(playerOne.transform.position.x - playerTwo.transform.position.x - playerThree.transform.position.x) 
+            + Mathf.Abs(playerOne.transform.position.y - playerTwo.transform.position.y - playerThree.transform.position.y); 
         }
 
         if (PlayerSpawnManager.instance.playerList.Count == 4)
         {
-            totalZ -= (Mathf.Abs(playerOne.transform.position.x) - Mathf.Abs(playerTwo.transform.position.x) - Mathf.Abs(playerThree.transform.position.x) - Mathf.Abs(playerFour.transform.position.x)) 
-            + (Mathf.Abs(playerOne.transform.position.y) - Mathf.Abs(playerTwo.transform.position.y) - Mathf.Abs(playerThree.transform.position.y) - Mathf.Abs(playerFour.transform.position.y)); 
+            totalZ -= Mathf.Abs(playerOne.transform.position.x - playerTwo.transform.position.x - playerThree.transform.position.x - playerFour.transform.position.x) 
+            + Mathf.Abs(playerOne.transform.position.y - playerTwo.transform.position.y - playerThree.transform.position.y - playerFour.transform.position.y); 
         } 
 
         var centerX = totalX / PlayerSpawnManager.instance.playerList.Count; // divide total x value by number of players

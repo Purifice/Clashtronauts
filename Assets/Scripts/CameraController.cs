@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Build.Content;
@@ -7,6 +8,9 @@ public class CameraController : MonoBehaviour
 {
 
     public Transform playerOne;
+    public Transform playerTwo;
+    public Transform playerThree;
+    public Transform playerFour;
 
     private bool onPlayer = false;
 
@@ -38,10 +42,13 @@ public class CameraController : MonoBehaviour
         var minY = Globals.WorldBounds.min.y + height;
         var maxY = Globals.WorldBounds.extents.y - height;
 
+        var minZ = Globals.WorldBounds.min.z;
+        var maxZ = Globals.WorldBounds.extents.z;
+
         cameraBounds = new Bounds();
         cameraBounds.SetMinMax(
-         new Vector3(minX, minY, 0f),
-         new Vector3(maxX, maxY, 0f)
+         new Vector3(minX, minY, minZ),
+         new Vector3(maxX, maxY, maxZ)
          );
     }
 
@@ -58,10 +65,26 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(playerOne != null && PlayerSpawnManager.instance.playerList.Count < 2)
+
+        if (PlayerSpawnManager.instance.playerList.Count == 2)
+        {
+        CameraController.instance.playerTwo = PlayerSpawnManager.instance.playerList[1].gameObject.transform;
+        }
+        if (PlayerSpawnManager.instance.playerList.Count == 3)
+        {
+        CameraController.instance.playerThree = PlayerSpawnManager.instance.playerList[2].gameObject.transform;
+        }
+        if (PlayerSpawnManager.instance.playerList.Count == 4)
+        {
+        CameraController.instance.playerFour = PlayerSpawnManager.instance.playerList[3].gameObject.transform;
+        }
+        // Assigns the transform value of "playerTwo" "playerThree" and "playerFour" to the second, third, and fourth players upon joining
+        
+
+        if(playerOne != null && PlayerSpawnManager.instance.playerList.Count < 2) //if only one player exists
         {
             Vector3 desiredPosition = playerOne.transform.position + offset;
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime); 
             transform.position = smoothedPosition;
 
             targetPosition = smoothedPosition;
@@ -71,7 +94,7 @@ public class CameraController : MonoBehaviour
 
             onPlayer = true;
         }
-        else if (PlayerSpawnManager.instance.playerList.Count >= 2)
+        else if (PlayerSpawnManager.instance.playerList.Count >= 2) //if more than one player exists
         {
             Vector3 desiredPosition = FindCentroid() + offset;
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
@@ -86,12 +109,14 @@ public class CameraController : MonoBehaviour
             onPlayer = false;
         }
 
+        
+
     }
 
     IEnumerator CameraStartDelay()
     {
         yield return new WaitForSeconds(0.2f);
-        if (PlayerSpawnManager.instance.playerList.Count < 0)
+        if (PlayerSpawnManager.instance.playerList.Count < 0) //if no players exist
         {
             SetCamera();
         }
@@ -111,22 +136,42 @@ public class CameraController : MonoBehaviour
 
     Vector3 FindCentroid()
     {
-        var totalX = 0f;
-        var totalY = 0f;
-        var totalZ = 0f;
+        var totalX = 0f; //set the default x value to 0 at start
+        var totalY = 0f; //set the default y value to 0 at start
+        var totalZ = 0f; //set the default z value to 0 at start
 
         foreach (var player in PlayerSpawnManager.instance.playerList)
         {
-            totalX += player.transform.position.x;
-            totalY += player.transform.position.y;
-            totalZ += player.transform.position.z;
+            totalX += player.transform.position.x; //add each players x position for a totalX
+            totalY += player.transform.position.y; //add each players y position for a totalY
+            //totalZ += player.transform.position.z;
+        }
+        
+        if (PlayerSpawnManager.instance.playerList.Count == 2)
+        {
+            totalZ -= (Mathf.Abs(playerOne.transform.position.x - playerTwo.transform.position.x) 
+            + Mathf.Abs(playerOne.transform.position.y - playerTwo.transform.position.y)); 
         }
 
-        var centerX = totalX / PlayerSpawnManager.instance.playerList.Count;
-        var centerY = totalY / PlayerSpawnManager.instance.playerList.Count;
-        var centerZ = totalZ / PlayerSpawnManager.instance.playerList.Count;
+        if (PlayerSpawnManager.instance.playerList.Count == 3)
+        {
+            totalZ -= (Mathf.Abs(playerOne.transform.position.x - playerTwo.transform.position.x - playerThree.transform.position.x) 
+            + Mathf.Abs(playerOne.transform.position.y - playerTwo.transform.position.y - playerThree.transform.position.y)); 
+        }
 
-        return new Vector3 (centerX, centerY, centerZ);
+        if (PlayerSpawnManager.instance.playerList.Count == 4)
+        {
+            totalZ -= (Mathf.Abs(playerOne.transform.position.x) - Mathf.Abs(playerTwo.transform.position.x) - Mathf.Abs(playerThree.transform.position.x) - Mathf.Abs(playerFour.transform.position.x)) 
+            + (Mathf.Abs(playerOne.transform.position.y) - Mathf.Abs(playerTwo.transform.position.y) - Mathf.Abs(playerThree.transform.position.y) - Mathf.Abs(playerFour.transform.position.y)); 
+        } 
+
+        var centerX = totalX / PlayerSpawnManager.instance.playerList.Count; // divide total x value by number of players
+        var centerY = totalY / PlayerSpawnManager.instance.playerList.Count; // divide total y value by number of players
+        var centerZ = totalZ / PlayerSpawnManager.instance.playerList.Count; // divide total z value by number of players
+        //Debug.Log(totalZ);
+       // Debug.Log (centerZ);
+
+        return new Vector3 (centerX, centerY, centerZ); //create a vector using the divided total of all 3 axis
     }
 
     private Vector3 GetCameraBounds()
@@ -134,7 +179,8 @@ public class CameraController : MonoBehaviour
         return new Vector3(
             Mathf.Clamp(targetPosition.x, cameraBounds.min.x, cameraBounds.max.x),
             Mathf.Clamp(targetPosition.y, cameraBounds.min.y, cameraBounds.max.y),
-            transform.position.z
+            Mathf.Clamp(targetPosition.z, cameraBounds.min.z, cameraBounds.max.z)
+          //  transform.position.z
             );
 
     }

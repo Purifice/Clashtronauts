@@ -153,8 +153,7 @@ public class PickUpController : MonoBehaviour
         Physics2D.IgnoreLayerCollision(7, 8, false);
         animator.SetBool("isCarrying", false);
         grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
-        Debug.Log(playermomentum); /* when diving the below code plays only once, due to the drop function triggering once cleanly. When throwing it plays numerous 
-        times very quickly, causing the carried momentum to be multiple times what its supposed to be, but why only when not jumping? */
+       // Debug.Log(playermomentum); 
         rigidbody2.AddForce(new Vector2(playermomentum.x * dropForwardForce, 0f), ForceMode2D.Impulse);
         rigidbody2.AddForce(new Vector2(0f, playermomentum.y * dropUpwardForce), ForceMode2D.Impulse);
 

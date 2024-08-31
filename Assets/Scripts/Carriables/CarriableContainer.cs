@@ -29,9 +29,16 @@ public class CarriableContainer : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!playermovement.facingFront)
+        if (!playermovement.facingFront) //if climbing
         {
-            transform.localPosition = new Vector3(-.8f, -0.2f, 0);
+            if (playermovement.climbfromLeft)
+            {
+                transform.localPosition = new Vector3(0, -0.2f, 0.8f);
+            }
+            else if(playermovement.climbfromRight)
+            {
+                transform.localPosition = new Vector3(0, -0.2f, -0.8f);
+            }
         }
        
         else if (playermovement.facingFront)

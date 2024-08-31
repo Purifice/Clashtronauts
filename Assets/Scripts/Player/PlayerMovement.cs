@@ -32,7 +32,10 @@ public class PlayerMovement : MonoBehaviour
     public bool interactButton = false;
     public bool dove = false;
     public bool canFlip = true;
+    public bool climbfromRight = false;
+    public bool climbfromLeft = false;
 
+    public Transform modelChild;
 
 
     private bool facingRight = true; //always spawns assuming it's facing right
@@ -52,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
         rb2D = gameObject.GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
+        modelChild = this.gameObject.transform.GetChild(0);
 
         speed = 12.5f;
         jump = 20f;
@@ -215,15 +219,20 @@ public class PlayerMovement : MonoBehaviour
 
         if (isClimbing && facingFront && facingRight) //if entering a climb from the right
         {
+            climbfromLeft = false;
+            climbfromRight = true;
             canFlip = false; //prevent 180 degree flips
             facingFront = !facingFront; //prevent looping rotation
-            transform.Rotate(0, -90, 0); //rotate left to face ladder
+            modelChild.transform.Rotate(0, -90, 0); //rotate left to face ladder
         }
         else if (isClimbing && facingFront && !facingRight) //if entering a climb from the left
         {
+
+            climbfromLeft = true;
+            climbfromRight = false;
             canFlip = false;
             facingFront = !facingFront;
-            transform.Rotate(0, 90, 0); //rotate right to face ladder
+            modelChild.transform.Rotate(0, 90, 0); //rotate right to face ladder
         }
 
         if (!facingFront && movementInput.x < 0 && !isLadder) //if off ladder but still facing it, and moving left
@@ -231,14 +240,14 @@ public class PlayerMovement : MonoBehaviour
             if (!facingRight) //if facing left
             {
                 canFlip = true; //allow for 180 rotations
-                facingFront = !facingFront; 
-                transform.Rotate(0, -90, 0); //rotate left
+                facingFront = !facingFront;
+                modelChild.transform.Rotate(0, -90, 0); //rotate left
             }
             else if (facingRight) //if facing right
             {
                 canFlip = true;
                 facingFront = !facingFront;
-                transform.Rotate(0, 90, 0); //rotate right
+                modelChild.transform.Rotate(0, 90, 0); //rotate right
             }
         }
         else if (!facingFront && movementInput.x > 0 && !isLadder) //if off ladder but still facing it, and moving right
@@ -247,13 +256,13 @@ public class PlayerMovement : MonoBehaviour
             {
                 canFlip = true;
                 facingFront = !facingFront;
-                transform.Rotate(0, 90, 0); //rotate right
+                modelChild.transform.Rotate(0, 90, 0); //rotate right
             }
             else if (!facingRight) //if facing left
             {
                 canFlip = true;
                 facingFront = !facingFront;
-                transform.Rotate(0, -90, 0); //rotate left
+                modelChild.transform.Rotate(0, -90, 0); //rotate left
             }
         }
 
@@ -270,14 +279,14 @@ public class PlayerMovement : MonoBehaviour
         {
             canFlip = true;
             facingFront = !facingFront;
-            transform.Rotate(0, -90, 0);
+            modelChild.transform.Rotate(0, -90, 0);
 
         }
         else if (!facingFront && !isJumping && !isMoving && facingRight)
         {
             canFlip = true;
             facingFront = !facingFront;
-            transform.Rotate(0, 90, 0);
+            modelChild.transform.Rotate(0, 90, 0);
 
         }
 
@@ -300,6 +309,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.gameObject.tag == "Surface") //every frame upon the surface:
         {
+            notGrounded = false;
             isJumping = false; //allow for jumping
             isDiving = false; //allow for normal movement
             speed = 12.5f; //default ground movement speed
@@ -356,12 +366,14 @@ public class PlayerMovement : MonoBehaviour
             if (collision.gameObject.tag == "Wall") //if exiting both surface and wall
             {
                 isJumping = true;
+                notGrounded = true;
                 animator.SetBool("isInAir", true);
                 speed = 10f;
             }
             else //for just exiting a collision with the surface, not the wall
             {
                 isJumping = true;
+                notGrounded = true;
                 animator.SetBool("isInAir", true);
                 speed = 10f; 
             }

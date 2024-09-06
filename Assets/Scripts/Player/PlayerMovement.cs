@@ -335,11 +335,13 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.tag == "Antigravity")
         {
             isGravity = false;
+            Debug.Log(collision.tag);
         }
-        else if (collision.gameObject.tag != "Antigravity")
-        {
-            isGravity = true;
-        }
+        // else if (collision.gameObject.tag != "Antigravity")
+        // {
+        //     isGravity = true;
+        // }
+        //above switched isGravity to true too often, leading to players spawning in immune from anti-gravity
         
         if (isGravity)
         {

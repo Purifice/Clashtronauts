@@ -1887,7 +1887,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 952c9ae97f30549cfa581ba43669ef09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playermovement: {fileID: 3002617537560429136, guid: 372de529b856c16478ab5ef9332e4323, type: 3}
+  playermovement1: {fileID: 0}
+  playermovement2: {fileID: 0}
+  playermovement3: {fileID: 0}
+  playermovement4: {fileID: 0}
   canSwitch: 0
 --- !u!1 &1710575707
 GameObject:

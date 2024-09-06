@@ -324,7 +324,7 @@ public class PlayerMovement : MonoBehaviour
         {
             canInteract = false;
             interacting = true;
-            //Debug.Log ("pressing!");
+            Debug.Log ("pressing!");
         }
         if(!canInteract && !interactButton)
         {

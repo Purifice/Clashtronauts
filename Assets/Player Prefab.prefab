@@ -1421,8 +1421,11 @@ MonoBehaviour:
   canFlip: 1
   climbfromRight: 0
   climbfromLeft: 0
-  modelChild: {fileID: 0}
   notGrounded: 0
+  isGravity: 0
+  interacting: 0
+  canInteract: 0
+  modelChild: {fileID: 0}
 --- !u!50 &3002617537560429165
 Rigidbody2D:
   serializedVersion: 4

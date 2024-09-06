@@ -36,6 +36,9 @@ public class PlayerMovement : MonoBehaviour
     public bool climbfromLeft = false;
     public bool notGrounded;
     public bool isGravity;
+    public bool interacting;
+    public bool canInteract;
+
 
     private bool facingRight = true; //always spawns assuming it's facing right
     private bool hasDove;
@@ -60,6 +63,8 @@ public class PlayerMovement : MonoBehaviour
         jump = 20f;
         dampener = .1f;
         isJumping = false;
+        isGravity =  true;
+        canInteract = true;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -90,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        rb2D.AddForce(Vector2.zero);
         if (isGravity)
         {
             //   moveHorizontal = Input.GetAxisRaw("Horizontal"); //deprecated
@@ -146,7 +151,6 @@ public class PlayerMovement : MonoBehaviour
         
         else if (!isGravity)
         {
-            Debug.Log ("No Gravity!");
         }
 
     }
@@ -315,6 +319,28 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D collision) //every frame where Collider2D is activating a trigger collision
     {
+       
+        if(collision.gameObject.tag == "Trigger" && interactButton && canInteract)
+        {
+            canInteract = false;
+            interacting = true;
+            //Debug.Log ("pressing!");
+        }
+        if(!canInteract && !interactButton)
+        {
+            interacting = false;
+            canInteract = true;
+        }
+
+        if (collision.gameObject.tag == "Antigravity")
+        {
+            isGravity = false;
+        }
+        else if (collision.gameObject.tag != "Antigravity")
+        {
+            isGravity = true;
+        }
+        
         if (isGravity)
         {
             if (collision.gameObject.tag == "Surface") //every frame upon the surface:
@@ -376,8 +402,12 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collision) //upon Collider2D no longer activating a trigger collision
     {
-        if(isGravity)
+        if (collision.gameObject.tag == "Antigravity")
         {
+            isGravity = true;
+        }
+        if(isGravity)
+       {
             if (collision.gameObject.tag == "Surface") //if exiting with the surface
             {
                 

@@ -20,7 +20,7 @@ public class ObjectPhysics : MonoBehaviour
     void Update()
     {
         currentGravity = rb2d.gravityScale;
-        
+
         if (isGravity)
         {
             rb2d.gravityScale = defaultGravity;
@@ -28,6 +28,22 @@ public class ObjectPhysics : MonoBehaviour
         else if (!isGravity)
         {
             rb2d.gravityScale = 0f;
+        }
+    }
+   
+   void OnTriggerStay2D(Collider2D collision) //every frame where Collider2D is activating a trigger collision
+    {
+        if (collision.gameObject.tag == "Antigravity")
+        {
+            isGravity = false;
+        }
+    }
+    
+    void OnTriggerExit2D(Collider2D collision) //upon Collider2D no longer activating a trigger collision
+    {
+        if (collision.gameObject.tag == "Antigravity")
+        {
+            isGravity = true;
         }
     }
 }

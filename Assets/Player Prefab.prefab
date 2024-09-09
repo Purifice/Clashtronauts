@@ -1588,6 +1588,30 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 519eeea7-86a1-434b-ad21-403c9def7938
     m_ActionName: Player 1/Throw[/Keyboard/slash]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e3bc12b7-52b3-4ec0-ac32-ca8a61d60b3b
+    m_ActionName: Player 2/Movement[/Keyboard/a,/Keyboard/d,/Keyboard/w,/Keyboard/s,/Keyboard/leftArrow,/Keyboard/rightArrow,/Keyboard/upArrow,/Keyboard/downArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d099bbb1-9403-4aac-bca0-faf0de19911c
+    m_ActionName: Player 2/Jump[/Keyboard/w,/Keyboard/space,/Keyboard/upArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7678e580-00a0-48db-a23b-fc5a6639012d
+    m_ActionName: Player 2/Climb[/Keyboard/w,/Keyboard/upArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e1563d78-301d-4288-85b4-e0ddec099c3f
+    m_ActionName: Player 2/Dive[/Keyboard/period]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6578453e-af24-42db-8ac9-2660abbae49d
+    m_ActionName: Player 2/Carry[/Keyboard/slash]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9cedf03b-8cfc-4270-9fa0-b5f017127eb5
+    m_ActionName: Player 2/Interact[/Keyboard/comma]
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player 1

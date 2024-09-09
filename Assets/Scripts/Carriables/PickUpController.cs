@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 using UnityEngine.InputSystem;
@@ -102,7 +103,8 @@ public class PickUpController : MonoBehaviour
             if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex)
             //if hitting something, and if that thing is what's specified in layerIndex (the Pickables layer)
             {
-                if (playermovement.carryButton && grabbedObject == null && buffer ==.1f) //if button to carry is pressed and nothing is grabbed and buffer is reset
+                Debug.Log("can carry");
+                if (playermovement.carryButton && grabbedObject == null && buffer == .1f) //if button to carry is pressed and nothing is grabbed and buffer is reset
                 {
                     Physics2D.IgnoreLayerCollision(6, 8, true);
                     Physics2D.IgnoreLayerCollision(7, 8, true);

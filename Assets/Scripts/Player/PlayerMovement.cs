@@ -69,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        movementInput = context.ReadValue<Vector2>(); //reads the input value of the L/R movement
+        movementInput = context.ReadValue<Vector2>(); //reads the input value of L/R/U/D movement
     }
     public void OnJump(InputAction.CallbackContext context)
     {
@@ -95,12 +95,21 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb2D.AddForce(Vector2.zero);
+        rb2D.AddForce(Vector2.zero); //prevents onstay collisions from falling asleep when standing still
+
+        if (dampener < 1) // gradually unlimits the movement speed for a smooth acceleration
+            {
+                dampener += 2f * Time.deltaTime;
+            }
+            else if (dampener > 1)
+            {
+                dampener = 1f;
+            }
+
+            vertical = Input.GetAxis("Vertical"); // for determining a smoother vertical movement occurence
+
         if (isGravity)
         {
-            //   moveHorizontal = Input.GetAxisRaw("Horizontal"); //deprecated
-            //   moveVertical = Input.GetAxisRaw("Vertical"); //deprecated
-            vertical = Input.GetAxis("Vertical"); // for determining a smoother vertical movement occurence
 
             if (dove) //if pressing the dive key
             {
@@ -136,21 +145,15 @@ public class PlayerMovement : MonoBehaviour
             }
             else //if not diving
             {
-
+                //empty
             }
 
-            if (dampener < 1) // gradually unlimits the movement speed for a smooth acceleration
-            {
-                dampener += 2f * Time.deltaTime;
-            }
-            else if (dampener > 1)
-            {
-                dampener = 1f;
-            }
+            
         }
         
         else if (!isGravity)
         {
+            //set diving conditions for 0g
         }
 
     }
@@ -162,11 +165,8 @@ public class PlayerMovement : MonoBehaviour
         {
             if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f))
             {
-                //rb2D.AddForce(new Vector2(moveHorizontal * speed, 0f), ForceMode2D.Impulse);
-                //The above movement method applies a force constantly as the key is pressed, good for 0g?
                 rb2D.velocity = new Vector2(movementInput.x * (dampener * speed), rb2D.velocity.y);
                 //the above calculates movement off the new input system but doesn't return the smoothing of getaxis
-                //rb2D.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
                 animator.SetBool("isWalking", true);
                 isMoving = true;
             }
@@ -312,7 +312,39 @@ public class PlayerMovement : MonoBehaviour
 
         else if (!isGravity)
         {
+            
+            //applying movement force
+            rb2D.gravityScale = 0f;
+            if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f) || (movementInput.y > 0f || movementInput.y < -0f))
+            {
+                rb2D.AddForce(new Vector2(movementInput.x * ((1f +dampener) * speed), movementInput.y * ((1f +dampener) * speed)), ForceMode2D.Force); //applies a force as opposed to setting a velocity
+                //rb2D.velocity = new Vector2(movementInput.x * (dampener * speed), movementInput.y * (dampener * speed)); //gravity movement applied to 0g
+                //animator.SetBool("animationstate", true);
+                isMoving = true;
+            }
 
+            //applies logic for not moving
+            else if(!isDiving && (movementInput.x <= 0f || movementInput.x >= -0f) || (movementInput.y <= 0f || movementInput.y >= -0f))
+            {
+                dampener = .1f;
+                //animator.SetBool("animationstate", false);
+                isMoving = false;
+            }
+            
+            //ladder movement and direction
+            if (climbfromLeft == true)
+            {
+                modelChild.transform.Rotate(0, 90, 0); //rotate right
+                climbfromLeft = false;
+
+            }
+             if (climbfromRight == true)
+            {
+                modelChild.transform.Rotate(0, -90, 0); //rotate left
+                climbfromRight = false;
+
+            }
+            //facing direction
         }
 
     }
@@ -324,7 +356,7 @@ public class PlayerMovement : MonoBehaviour
         {
             canInteract = false;
             interacting = true;
-            Debug.Log ("pressing!");
+            //Debug.Log ("pressing!");
         }
         if(!canInteract && !interactButton)
         {
@@ -335,7 +367,7 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.tag == "Antigravity")
         {
             isGravity = false;
-            Debug.Log(collision.tag);
+            //Debug.Log(collision.tag);
         }
         // else if (collision.gameObject.tag != "Antigravity")
         // {

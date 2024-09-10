@@ -318,7 +318,9 @@ public class PlayerMovement : MonoBehaviour
             if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f) || (movementInput.y > 0f || movementInput.y < -0f))
             {
                 rb2D.AddForce(new Vector2(movementInput.x * ((1f +dampener) * speed), movementInput.y * ((1f +dampener) * speed)), ForceMode2D.Force); //applies a force as opposed to setting a velocity
-                //rb2D.velocity = new Vector2(movementInput.x * (dampener * speed), movementInput.y * (dampener * speed)); //gravity movement applied to 0g
+                //rb2D.velocity = new Vector2(movementInput.x * (dampener * speed), movementInput.y * (dampener * speed));
+                //gravity movement applied to 0g
+
                 //animator.SetBool("animationstate", true);
                 isMoving = true;
             }

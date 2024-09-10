@@ -58,6 +58,7 @@ public class PickUpController : MonoBehaviour
 
         animator = playermovement.GetComponent<Animator>();
 
+
         if (!equipped)
         {
             //coll.isTrigger = false;
@@ -98,6 +99,8 @@ public class PickUpController : MonoBehaviour
     
         playermomentum = rb2D.velocity;
         RaycastHit2D hitInfo = Physics2D.Raycast(rayPoint.position, transform.position, rayDistance);
+        //Debug.DrawRay(rayPoint.position, transform.right * rayDistance);
+        Debug.Log(hitInfo.collider.gameObject.layer);
         //sets the ray to the specified rayPoint object on the player
 
             if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex)

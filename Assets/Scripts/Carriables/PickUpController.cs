@@ -41,6 +41,7 @@ public class PickUpController : MonoBehaviour
 
     public float buffer = .1f;
 
+    public LayerMask noHit;
 
 
 
@@ -98,15 +99,15 @@ public class PickUpController : MonoBehaviour
         }
     
         playermomentum = rb2D.velocity;
-        RaycastHit2D hitInfo = Physics2D.Raycast(rayPoint.position, transform.position, rayDistance);
+        RaycastHit2D hitInfo = Physics2D.Raycast(rayPoint.position, transform.position, rayDistance, noHit);
         //Debug.DrawRay(rayPoint.position, transform.right * rayDistance);
-        Debug.Log(hitInfo.collider.gameObject.layer);
+        //Debug.Log(hitInfo.collider.gameObject.layer);
         //sets the ray to the specified rayPoint object on the player
 
             if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex)
             //if hitting something, and if that thing is what's specified in layerIndex (the Pickables layer)
             {
-                Debug.Log("can carry");
+                //Debug.Log("can carry");
                 if (playermovement.carryButton && grabbedObject == null && buffer == .1f) //if button to carry is pressed and nothing is grabbed and buffer is reset
                 {
                     Physics2D.IgnoreLayerCollision(6, 8, true);

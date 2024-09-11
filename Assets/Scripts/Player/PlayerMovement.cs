@@ -10,9 +10,11 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb2D;
     public Animator animator;
+    public AntigravityZone antigravityzone;
 
 
     public float speed;
+    public float maxVelocity = 25f;
     public float jump;
     public float dampener =.1f;
     
@@ -36,8 +38,7 @@ public class PlayerMovement : MonoBehaviour
     public bool climbfromLeft = false;
     public bool notGrounded;
     public bool isGravity;
-    public bool interacting;
-    public bool canInteract;
+  
 
 
     private bool facingRight = true; //always spawns assuming it's facing right
@@ -49,7 +50,8 @@ public class PlayerMovement : MonoBehaviour
     public Transform modelChild;
 
     private Vector2 movementInput = Vector2.zero;
-    
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -64,7 +66,8 @@ public class PlayerMovement : MonoBehaviour
         dampener = .1f;
         isJumping = false;
         isGravity =  true;
-        canInteract = true;
+        antigravityzone = GameObject.Find("AntiGravity Zone").GetComponent<AntigravityZone>();
+
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -161,6 +164,13 @@ public class PlayerMovement : MonoBehaviour
     // Fixed Update is called every fixed-rate frame, and is best for physics
     void FixedUpdate() 
     {
+        //rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxVelocity);
+        //Debug.Log(rb2D.velocity);
+        /*if (rb2D.velocity.x > 30f);
+        {
+            Debug.Log(rb2D.velocity.x);
+        }*/
+
         if (isGravity)
         {
             if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f))
@@ -308,6 +318,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 flip();
             }
+
+
+            
+            rb2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+
         }
 
         else if (!isGravity)
@@ -315,6 +330,7 @@ public class PlayerMovement : MonoBehaviour
             
             //applying movement force
             rb2D.gravityScale = 0f;
+
             if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f) || (movementInput.y > 0f || movementInput.y < -0f))
             {
                 rb2D.AddForce(new Vector2(movementInput.x * ((1f +dampener) * speed), movementInput.y * ((1f +dampener) * speed)), ForceMode2D.Force); //applies a force as opposed to setting a velocity
@@ -346,24 +362,36 @@ public class PlayerMovement : MonoBehaviour
                 climbfromRight = false;
 
             }
+
             //facing direction
+            if (movementInput.x < 0 && facingRight && canFlip) //if moving left and facing right and able to flip
+            {
+                flip(); //defined in void flip
+            }
+            if (movementInput.x > 0 && !facingRight && canFlip) //if moving right and facing left and able to flip
+            {
+                flip();
+            }
+
+            rb2D.constraints = RigidbodyConstraints2D.None;
         }
+
 
     }
 
     void OnTriggerStay2D(Collider2D collision) //every frame where Collider2D is activating a trigger collision
     {
        
-        if(collision.gameObject.tag == "Trigger" && interactButton && canInteract)
+        if(collision.gameObject.tag == "Trigger" && interactButton && antigravityzone.canInteract)
         {
-            canInteract = false;
-            interacting = true;
+            antigravityzone.canInteract = false;
+            antigravityzone.interacting = true;
             //Debug.Log ("pressing!");
         }
-        if(!canInteract && !interactButton)
+        if(!antigravityzone.canInteract && !interactButton)
         {
-            interacting = false;
-            canInteract = true;
+            antigravityzone.interacting = false;
+            antigravityzone.canInteract = true;
         }
 
         if (collision.gameObject.tag == "Antigravity")

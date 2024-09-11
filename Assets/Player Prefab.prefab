@@ -1410,7 +1410,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
+  antigravityzone: {fileID: 0}
   speed: 0
+  maxVelocity: 25
   jump: 0
   dampener: 0
   isJumping: 0
@@ -1426,8 +1428,6 @@ MonoBehaviour:
   climbfromLeft: 0
   notGrounded: 0
   isGravity: 0
-  interacting: 0
-  canInteract: 0
   modelChild: {fileID: 0}
 --- !u!50 &3002617537560429165
 Rigidbody2D:
@@ -1443,7 +1443,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.5
   m_GravityScale: 5
   m_Material: {fileID: 0}
   m_Interpolate: 1

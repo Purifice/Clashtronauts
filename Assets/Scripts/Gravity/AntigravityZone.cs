@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 public class AntigravityZone : MonoBehaviour
 {
 
-    private BoxCollider2D zone;
+    public BoxCollider2D zone;
    
     //public static AntigravityZone instance = null;
 

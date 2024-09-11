@@ -38,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
     public bool climbfromLeft = false;
     public bool notGrounded;
     public bool isGravity;
+    public bool mustRotate;
   
 
 
@@ -50,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform modelChild;
 
     private Vector2 movementInput = Vector2.zero;
+
 
 
 
@@ -66,6 +68,7 @@ public class PlayerMovement : MonoBehaviour
         dampener = .1f;
         isJumping = false;
         isGravity =  true;
+        mustRotate = false;
         antigravityzone = GameObject.Find("AntiGravity Zone").GetComponent<AntigravityZone>();
 
     }
@@ -328,14 +331,14 @@ public class PlayerMovement : MonoBehaviour
         else if (!isGravity)
         {
             
-            //applying movement force
             rb2D.gravityScale = 0f;
+            animator.SetBool("isInAir", true);
 
+            //applying movement force
             if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f) || (movementInput.y > 0f || movementInput.y < -0f))
             {
-                rb2D.AddForce(new Vector2(movementInput.x * ((1f +dampener) * speed), movementInput.y * ((1f +dampener) * speed)), ForceMode2D.Force); //applies a force as opposed to setting a velocity
-                //rb2D.velocity = new Vector2(movementInput.x * (dampener * speed), movementInput.y * (dampener * speed));
-                //gravity movement applied to 0g
+                rb2D.AddForce(new Vector2(movementInput.x * ((1f +dampener) * speed), movementInput.y * ((1f +dampener) * speed)), ForceMode2D.Force); 
+                //applies a force as opposed to setting a velocity
 
                 //animator.SetBool("animationstate", true);
                 isMoving = true;
@@ -350,33 +353,38 @@ public class PlayerMovement : MonoBehaviour
             }
             
             //ladder movement and direction
-            if (climbfromLeft == true)
+            if (climbfromLeft && !facingFront)
             {
                 modelChild.transform.Rotate(0, 90, 0); //rotate right
                 climbfromLeft = false;
 
             }
-             if (climbfromRight == true)
+             if (climbfromRight && !facingFront)
             {
                 modelChild.transform.Rotate(0, -90, 0); //rotate left
                 climbfromRight = false;
 
             }
 
-            //facing direction
-            if (movementInput.x < 0 && facingRight && canFlip) //if moving left and facing right and able to flip
+            if(isMoving)
             {
-                flip(); //defined in void flip
+                //Debug.Log ("moving"); 
+                 RotateTowardsTarget();
             }
-            if (movementInput.x > 0 && !facingRight && canFlip) //if moving right and facing left and able to flip
-            {
-                flip();
-            }
-
+           
             rb2D.constraints = RigidbodyConstraints2D.None;
         }
 
-
+        if (antigravityzone.interacting && !antigravityzone.zone.enabled) //if a player is pressing the button and the zone is off
+        {
+            //Debug.Log("test");
+            mustRotate = true;
+        }
+        if (mustRotate && !notGrounded)
+        {
+            //Debug.Log ("time to rotate to normal!");
+            mustRotate = false;
+        }
     }
 
     void OnTriggerStay2D(Collider2D collision) //every frame where Collider2D is activating a trigger collision
@@ -399,12 +407,7 @@ public class PlayerMovement : MonoBehaviour
             isGravity = false;
             //Debug.Log(collision.tag);
         }
-        // else if (collision.gameObject.tag != "Antigravity")
-        // {
-        //     isGravity = true;
-        // }
-        //above switched isGravity to true too often, leading to players spawning in immune from anti-gravity
-        
+       
         if (isGravity)
         {
             if (collision.gameObject.tag == "Surface") //every frame upon the surface:
@@ -459,7 +462,7 @@ public class PlayerMovement : MonoBehaviour
 
         else if(!isGravity)
         {
-
+            speed = 10f;
         }
         
     }
@@ -514,7 +517,7 @@ public class PlayerMovement : MonoBehaviour
 
         else if(!isGravity)
         {
-
+            speed = 10f;
         }
     }
 
@@ -525,5 +528,16 @@ public class PlayerMovement : MonoBehaviour
         dampener = .1f;
 
     }
+
+   private void RotateTowardsTarget()
+{
+    float rotationSpeed = 2.5f; 
+    float offset = 0f;    
+    Vector2 direction = movementInput;
+    direction.Normalize();
+    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+    Quaternion rotation = Quaternion.AngleAxis(angle + offset, Vector3.forward);
+    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+}
 
 }

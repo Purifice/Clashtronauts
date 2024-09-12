@@ -14,15 +14,15 @@ public class PlayerMovement : MonoBehaviour
 
 
     public float speed;
-    public float maxVelocity = 25f;
+    public float maxVelocity;
     public float jump;
-    public float dampener =.1f;
-    
+    public float dampener = .1f;
+
 
     //private float moveHorizontal;
     //private float moveVertical;
     private float vertical; //for ladder movement
-    
+
 
 
     public bool isJumping;
@@ -39,10 +39,10 @@ public class PlayerMovement : MonoBehaviour
     public bool notGrounded;
     public bool isGravity;
     public bool mustRotate;
-  
 
 
-    private bool facingRight = true; //always spawns assuming it's facing right
+
+    public bool facingRight = true; //always spawns assuming it's facing right
     private bool hasDove;
     private bool isMoving;
     private bool jumped = false;
@@ -51,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform modelChild;
 
     private Vector2 movementInput = Vector2.zero;
+
 
 
 
@@ -64,13 +65,14 @@ public class PlayerMovement : MonoBehaviour
         modelChild = this.gameObject.transform.GetChild(0);
 
         speed = 12.5f;
+        maxVelocity = 17.5f;
         jump = 20f;
         dampener = .1f;
         isJumping = false;
-        isGravity =  true;
+        isGravity = true;
         mustRotate = false;
         antigravityzone = GameObject.Find("AntiGravity Zone").GetComponent<AntigravityZone>();
-
+    
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -101,18 +103,19 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         rb2D.AddForce(Vector2.zero); //prevents onstay collisions from falling asleep when standing still
 
         if (dampener < 1) // gradually unlimits the movement speed for a smooth acceleration
-            {
-                dampener += 2f * Time.deltaTime;
-            }
-            else if (dampener > 1)
-            {
-                dampener = 1f;
-            }
+        {
+            dampener += 2f * Time.deltaTime;
+        }
+        else if (dampener > 1)
+        {
+            dampener = 1f;
+        }
 
-            vertical = Input.GetAxis("Vertical"); // for determining a smoother vertical movement occurence
+        vertical = Input.GetAxis("Vertical"); // for determining a smoother vertical movement occurence
 
         if (isGravity)
         {
@@ -136,7 +139,7 @@ public class PlayerMovement : MonoBehaviour
 
                 if (facingRight)
                 {
-                    rb2D.velocity = new Vector2(12.5f, 15f); 
+                    rb2D.velocity = new Vector2(12.5f, 15f);
                 }
                 else
                 {
@@ -154,9 +157,9 @@ public class PlayerMovement : MonoBehaviour
                 //empty
             }
 
-            
+
         }
-        
+
         else if (!isGravity)
         {
             //set diving conditions for 0g
@@ -165,17 +168,13 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // Fixed Update is called every fixed-rate frame, and is best for physics
-    void FixedUpdate() 
+    void FixedUpdate()
     {
-        //rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxVelocity);
-        //Debug.Log(rb2D.velocity);
-        /*if (rb2D.velocity.x > 30f);
-        {
-            Debug.Log(rb2D.velocity.x);
-        }*/
-
+       
         if (isGravity)
         {
+
+            OrientUp();
             if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f))
             {
                 rb2D.velocity = new Vector2(movementInput.x * (dampener * speed), rb2D.velocity.y);
@@ -183,7 +182,7 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetBool("isWalking", true);
                 isMoving = true;
             }
-            else if(!isDiving && (movementInput.x <= 0f || movementInput.x >= -0f))
+            else if (!isDiving && (movementInput.x <= 0f || movementInput.x >= -0f))
             {
                 dampener = .1f;
                 animator.SetBool("isWalking", false);
@@ -208,9 +207,9 @@ public class PlayerMovement : MonoBehaviour
 
             }
 
-        // if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
-            if (isLadder && climbed) 
-                {
+            // if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
+            if (isLadder && climbed)
+            {
                 isClimbing = true;
                 animator.SetBool("isClimbing", true);
 
@@ -231,7 +230,7 @@ public class PlayerMovement : MonoBehaviour
 
                 rb2D.gravityScale = 0f; //sets gravity to 0
                 rb2D.velocity = new Vector2(rb2D.velocity.x, vertical * speed); //moves up ladder
-                
+
             }
             else
             {
@@ -323,35 +322,39 @@ public class PlayerMovement : MonoBehaviour
             }
 
 
-            
+
             rb2D.constraints = RigidbodyConstraints2D.FreezeRotation;
 
         }
 
         else if (!isGravity)
         {
-            
+
             rb2D.gravityScale = 0f;
             animator.SetBool("isInAir", true);
+            LockXRotation();
+            LimitVelocity();
+            //Debug.Log(rb2D.velocity);
 
             //applying movement force
             if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f) || (movementInput.y > 0f || movementInput.y < -0f))
             {
-                rb2D.AddForce(new Vector2(movementInput.x * ((1f +dampener) * speed), movementInput.y * ((1f +dampener) * speed)), ForceMode2D.Force); 
+                rb2D.AddForce(new Vector2(movementInput.x * ((1f + dampener) * speed), movementInput.y * ((1f + dampener) * speed)), ForceMode2D.Force);
                 //applies a force as opposed to setting a velocity
 
                 //animator.SetBool("animationstate", true);
                 isMoving = true;
+
             }
 
             //applies logic for not moving
-            else if(!isDiving && (movementInput.x <= 0f || movementInput.x >= -0f) || (movementInput.y <= 0f || movementInput.y >= -0f))
+            else if (!isDiving && (movementInput.x <= 0f || movementInput.x >= -0f) || (movementInput.y <= 0f || movementInput.y >= -0f))
             {
                 dampener = .1f;
                 //animator.SetBool("animationstate", false);
                 isMoving = false;
             }
-            
+
             //ladder movement and direction
             if (climbfromLeft && !facingFront)
             {
@@ -359,23 +362,23 @@ public class PlayerMovement : MonoBehaviour
                 climbfromLeft = false;
 
             }
-             if (climbfromRight && !facingFront)
+            if (climbfromRight && !facingFront)
             {
                 modelChild.transform.Rotate(0, -90, 0); //rotate left
                 climbfromRight = false;
 
             }
 
-            if(isMoving)
+            if (isMoving)
             {
                 //Debug.Log ("moving"); 
-                 RotateTowardsTarget();
+                RotateTowardsTarget();
             }
-           
+
             rb2D.constraints = RigidbodyConstraints2D.None;
         }
 
-        if (antigravityzone.interacting && !antigravityzone.zone.enabled) //if a player is pressing the button and the zone is off
+        /*if (antigravityzone.interacting && !antigravityzone.zone.enabled) //if a player is pressing the button and the zone is off
         {
             //Debug.Log("test");
             mustRotate = true;
@@ -383,20 +386,21 @@ public class PlayerMovement : MonoBehaviour
         if (mustRotate && !notGrounded)
         {
             //Debug.Log ("time to rotate to normal!");
+            OrientUp();
             mustRotate = false;
-        }
+        }*/
     }
 
     void OnTriggerStay2D(Collider2D collision) //every frame where Collider2D is activating a trigger collision
     {
-       
-        if(collision.gameObject.tag == "Trigger" && interactButton && antigravityzone.canInteract)
+
+        if (collision.gameObject.tag == "Trigger" && interactButton && antigravityzone.canInteract)
         {
             antigravityzone.canInteract = false;
             antigravityzone.interacting = true;
             //Debug.Log ("pressing!");
         }
-        if(!antigravityzone.canInteract && !interactButton)
+        if (!antigravityzone.canInteract && !interactButton)
         {
             antigravityzone.interacting = false;
             antigravityzone.canInteract = true;
@@ -407,7 +411,7 @@ public class PlayerMovement : MonoBehaviour
             isGravity = false;
             //Debug.Log(collision.tag);
         }
-       
+
         if (isGravity)
         {
             if (collision.gameObject.tag == "Surface") //every frame upon the surface:
@@ -421,7 +425,7 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetBool("isDiving", false);
                 if (!isClimbing)
                 {
-                canFlip = true; 
+                    canFlip = true;
                 }
             }
 
@@ -460,11 +464,11 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        else if(!isGravity)
+        else if (!isGravity)
         {
             speed = 10f;
         }
-        
+
     }
 
     void OnTriggerExit2D(Collider2D collision) //upon Collider2D no longer activating a trigger collision
@@ -473,11 +477,11 @@ public class PlayerMovement : MonoBehaviour
         {
             isGravity = true;
         }
-        if(isGravity)
-       {
+        if (isGravity)
+        {
             if (collision.gameObject.tag == "Surface") //if exiting with the surface
             {
-                
+
                 if (collision.gameObject.tag == "Wall") //if exiting both surface and wall
                 {
                     isJumping = true;
@@ -490,7 +494,7 @@ public class PlayerMovement : MonoBehaviour
                     isJumping = true;
                     notGrounded = true;
                     animator.SetBool("isInAir", true);
-                    speed = 10f; 
+                    speed = 10f;
                 }
 
             }
@@ -507,7 +511,7 @@ public class PlayerMovement : MonoBehaviour
                 speed = 10f;
 
             }
-            else if (collision.gameObject.tag  == "Player" && !notGrounded)
+            else if (collision.gameObject.tag == "Player" && !notGrounded)
             {
                 isJumping = false;
                 animator.SetBool("isInAir", false);
@@ -515,7 +519,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        else if(!isGravity)
+        else if (!isGravity)
         {
             speed = 10f;
         }
@@ -529,15 +533,66 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-   private void RotateTowardsTarget()
-{
-    float rotationSpeed = 2.5f; 
-    float offset = 0f;    
-    Vector2 direction = movementInput;
-    direction.Normalize();
-    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-    Quaternion rotation = Quaternion.AngleAxis(angle + offset, Vector3.forward);
-    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
-}
+    private void RotateTowardsTarget()
+    {
+        float rotationSpeed = 1.5f;
+        float offset = 0f;
+        Vector2 direction = movementInput;
+        direction.Normalize();
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.AngleAxis(angle + offset, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+    }
+
+    void LimitVelocity()
+    {
+        // Get the current velocity of the Rigidbody2D
+        Vector2 velocity = rb2D.velocity;
+
+        // If the magnitude of the velocity exceeds the maxSpeed, clamp it
+        if (velocity.magnitude > maxVelocity)
+        {
+            rb2D.velocity = velocity.normalized * maxVelocity;
+        }
+    }
+    void OrientUp()
+    {
+        /*// Calculate the "up" direction (positive y-axis) in 2D space
+        float angle = Mathf.Atan2(Vector2.up.y, Vector2.up.x) * Mathf.Rad2Deg;
+
+        // Rotate the Rigidbody2D to face "up"
+        rb2D.rotation = angle + -90f;*/
+
+        Vector3 currentRotation = transform.rotation.eulerAngles;
+
+        // Set the Z + X value of rotation to 0, and the y to either 0 or 180
+        currentRotation.z = 0;
+        currentRotation.x = 0;
+        if(facingRight)
+        {
+            currentRotation.y = 0;
+        }
+        else
+        {
+            currentRotation.y = 180;
+        }
+
+        // Apply the new rotation back to the transform
+        transform.rotation = Quaternion.Euler(currentRotation);
+    }
+
+    void LockXRotation()
+    {
+        Vector3 currentRotation = transform.rotation.eulerAngles;
+
+        // Set the xy value of rotation to 0
+       // currentRotation.x = 0;
+       // currentRotation.y = 0;
+        
+
+        // Apply the new rotation back to the transform
+        transform.rotation = Quaternion.Euler(currentRotation);
+    }
+    
 
 }

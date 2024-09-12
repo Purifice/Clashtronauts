@@ -1428,6 +1428,7 @@ MonoBehaviour:
   climbfromLeft: 0
   notGrounded: 0
   isGravity: 0
+  mustRotate: 0
   modelChild: {fileID: 0}
 --- !u!50 &3002617537560429165
 Rigidbody2D:

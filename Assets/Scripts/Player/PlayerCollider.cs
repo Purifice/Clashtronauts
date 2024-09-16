@@ -27,7 +27,7 @@ public class PlayerCollider : MonoBehaviour
     {
         while (true)
         {
-            if (playermovement.isDiving && !isDiving && !playermovement.isClimbing) //position when diving
+            if (playermovement.isDiving && !isDiving && !playermovement.isClimbing && playermovement.isGravity) //position when diving
             {
                 StopCoroutine(coroutineTwo);
                 StartCoroutine(coroutineOne);

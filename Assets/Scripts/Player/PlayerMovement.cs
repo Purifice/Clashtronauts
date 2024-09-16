@@ -17,11 +17,14 @@ public class PlayerMovement : MonoBehaviour
     public float maxVelocity;
     public float jump;
     public float dampener = .1f;
-
+    
 
     //private float moveHorizontal;
     //private float moveVertical;
     private float vertical; //for ladder movement
+    private float rotationSpeed;
+    private float offset;
+    private float angle;
 
 
 
@@ -51,6 +54,8 @@ public class PlayerMovement : MonoBehaviour
     public Transform modelChild;
 
     private Vector2 movementInput = Vector2.zero;
+    private Vector2 direction;
+    private Vector2 faceDirection;
 
 
 
@@ -63,7 +68,6 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
 
         modelChild = this.gameObject.transform.GetChild(0);
-
         speed = 12.5f;
         maxVelocity = 17.5f;
         jump = 20f;
@@ -163,6 +167,25 @@ public class PlayerMovement : MonoBehaviour
         else if (!isGravity)
         {
             //set diving conditions for 0g
+            if(dove && !isDiving) //if pressing the dive key and not already diving
+            {
+                isDiving = true;
+            }
+            if (isDiving)
+            {
+                faceDirection = transform.right;
+                animator.SetBool("isDiving", true); //start animation
+                rb2D.AddForce(faceDirection * 30 * (Time.deltaTime * 100f), ForceMode2D.Force);
+                maxVelocity = 32.5f;
+                //allow very limited movement
+
+            }
+            if (!isDiving)
+            {
+                animator.SetBool("isDiving", false);
+                maxVelocity = 17.5f;
+            }
+           
         }
 
     }
@@ -178,7 +201,6 @@ public class PlayerMovement : MonoBehaviour
             if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f))
             {
                 rb2D.velocity = new Vector2(movementInput.x * (dampener * speed), rb2D.velocity.y);
-                //the above calculates movement off the new input system but doesn't return the smoothing of getaxis
                 animator.SetBool("isWalking", true);
                 isMoving = true;
             }
@@ -337,7 +359,7 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log(rb2D.velocity);
 
             //applying movement force
-            if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f) || (movementInput.y > 0f || movementInput.y < -0f))
+            if (!isDiving && ((movementInput.x > 0f || movementInput.x < -0f) || (movementInput.y > 0f || movementInput.y < -0f)))
             {
                 rb2D.AddForce(new Vector2(movementInput.x * ((1f + dampener) * speed), movementInput.y * ((1f + dampener) * speed)), ForceMode2D.Force);
                 //applies a force as opposed to setting a velocity
@@ -348,7 +370,7 @@ public class PlayerMovement : MonoBehaviour
             }
 
             //applies logic for not moving
-            else if (!isDiving && (movementInput.x <= 0f || movementInput.x >= -0f) || (movementInput.y <= 0f || movementInput.y >= -0f))
+            else if (!isDiving && ((movementInput.x <= 0f || movementInput.x >= -0f) || (movementInput.y <= 0f || movementInput.y >= -0f)))
             {
                 dampener = .1f;
                 //animator.SetBool("animationstate", false);
@@ -373,6 +395,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 //Debug.Log ("moving"); 
                 RotateTowardsTarget();
+            }
+            else
+            {
+                rb2D.angularDrag = .5f;
             }
 
             rb2D.constraints = RigidbodyConstraints2D.None;
@@ -467,6 +493,11 @@ public class PlayerMovement : MonoBehaviour
         else if (!isGravity)
         {
             speed = 10f;
+
+            if (collision.gameObject.tag != "Antigravity" && collision.gameObject.tag != "Trigger" )
+            {
+                isDiving = false;
+            }
         }
 
     }
@@ -535,13 +566,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void RotateTowardsTarget()
     {
-        float rotationSpeed = 1.5f;
-        float offset = 0f;
-        Vector2 direction = movementInput;
+        rb2D.angularDrag = 3.5f;
+        rotationSpeed = 1.5f;
+        offset = 0f;
+        direction = movementInput;
+        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         direction.Normalize();
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.AngleAxis(angle + offset, Vector3.forward);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+
     }
 
     void LimitVelocity()

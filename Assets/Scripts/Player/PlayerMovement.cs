@@ -25,6 +25,9 @@ public class PlayerMovement : MonoBehaviour
     private float rotationSpeed;
     private float offset;
     private float angle;
+    private float targetAngle;
+    private float angleDifference;
+    private float torque;
 
 
 
@@ -42,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
     public bool notGrounded;
     public bool isGravity;
     public bool mustRotate;
+    public bool colliderRotate;
 
 
 
@@ -176,14 +180,17 @@ public class PlayerMovement : MonoBehaviour
                 faceDirection = transform.right;
                 animator.SetBool("isDiving", true); //start animation
                 rb2D.AddForce(faceDirection * 30 * (Time.deltaTime * 100f), ForceMode2D.Force);
+                
+                //rb2D.AddForce(new Vector2(movementInput.x * ((2 * dampener)), movementInput.y * ((2 * dampener))), ForceMode2D.Force);
                 maxVelocity = 32.5f;
-                //allow very limited movement
+                colliderRotate = true;
 
             }
             if (!isDiving)
             {
                 animator.SetBool("isDiving", false);
                 maxVelocity = 17.5f;
+                colliderRotate = false;
             }
            
         }
@@ -357,6 +364,11 @@ public class PlayerMovement : MonoBehaviour
             LockXRotation();
             LimitVelocity();
             //Debug.Log(rb2D.velocity);
+
+            if(isDiving)
+            {
+                RotateTowardsTargetLimited();
+            }
 
             //applying movement force
             if (!isDiving && ((movementInput.x > 0f || movementInput.x < -0f) || (movementInput.y > 0f || movementInput.y < -0f)))
@@ -568,6 +580,18 @@ public class PlayerMovement : MonoBehaviour
     {
         rb2D.angularDrag = 3.5f;
         rotationSpeed = 1.5f;
+        offset = 0f;
+        direction = movementInput;
+        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        direction.Normalize();
+        Quaternion rotation = Quaternion.AngleAxis(angle + offset, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+
+    }
+    private void RotateTowardsTargetLimited()
+    {
+        rb2D.angularDrag = 15f;
+        rotationSpeed = .75f;
         offset = 0f;
         direction = movementInput;
         angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;

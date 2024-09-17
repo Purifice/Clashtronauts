@@ -160,9 +160,24 @@ public class PickUpController : MonoBehaviour
         animator.SetBool("isCarrying", false);
         grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
        // Debug.Log(playermomentum); 
-        rigidbody2.AddForce(new Vector2(playermomentum.x * dropForwardForce, 0f), ForceMode2D.Impulse);
-        rigidbody2.AddForce(new Vector2(0f, playermomentum.y * dropUpwardForce), ForceMode2D.Impulse);
+       if(playermovement.isGravity)
+        {
+            dropForwardForce = 2f;
+            dropUpwardForce = .75f;
+            rigidbody2.AddForce(new Vector2(playermomentum.x * dropForwardForce, 0f), ForceMode2D.Impulse); //throw force x
+            rigidbody2.AddForce(new Vector2(0f, playermomentum.y * dropUpwardForce), ForceMode2D.Impulse); //throw force y
+        }
+       
+        if (!playermovement.isGravity)
+        {
+            dropForwardForce = 1.25f;
+            dropUpwardForce = 1.25f;
+            rigidbody2.AddForce(new Vector2(playermomentum.x * dropForwardForce, 0f), ForceMode2D.Impulse); //throw force x
+            rigidbody2.AddForce(new Vector2(0f, playermomentum.y * dropUpwardForce), ForceMode2D.Impulse); //throw force y
 
+            rb2D.AddForce(new Vector2(-playermomentum.x * dropForwardForce * 1f, 0f), ForceMode2D.Impulse); //throw force x
+            rb2D.AddForce(new Vector2(0f, -playermomentum.y * dropUpwardForce * 1f), ForceMode2D.Impulse); //throw force y
+        }
         grabbedObject.transform.SetParent(null);
         grabbedObject = null;
         rigidbody2 = GetComponentInChildren<Rigidbody2D>();

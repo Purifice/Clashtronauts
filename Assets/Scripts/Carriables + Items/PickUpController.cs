@@ -36,6 +36,7 @@ public class PickUpController : MonoBehaviour
     public GameObject grabbedObject;
 
     public PlayerMovement playermovement;
+    //public AntigravityZone antigravityzone;
 
     public bool equipped = false;
 
@@ -85,7 +86,7 @@ public class PickUpController : MonoBehaviour
             {
                 buffer = 1f; //set it to its finished actionable state (can be thrown)
             }
-        if (buffer == 1 && !equipped && playermovement.carryButton) //if the buffer has finished and the player has nothing equipped but is still pressing carry
+        if (buffer == 1 && !equipped && playermovement.interactButton) //if the buffer has finished and the player has nothing equipped but is still pressing carry
         {
             buffer = .5f; //set the buffer to a non-actionable state (cannot carry or throw)
         }
@@ -104,11 +105,11 @@ public class PickUpController : MonoBehaviour
         //Debug.Log(hitInfo.collider.gameObject.layer);
         //sets the ray to the specified rayPoint object on the player
 
-            if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex)
+            if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex && !playermovement.touchingTrigger)
             //if hitting something, and if that thing is what's specified in layerIndex (the Pickables layer)
             {
                 //Debug.Log("can carry");
-                if (playermovement.carryButton && grabbedObject == null && buffer == .1f) //if button to carry is pressed and nothing is grabbed and buffer is reset
+                if (playermovement.interactButton && grabbedObject == null && buffer == .1f) //if button to carry is pressed and nothing is grabbed and buffer is reset
                 {
                     Physics2D.IgnoreLayerCollision(6, 8, true);
                     Physics2D.IgnoreLayerCollision(7, 8, true);
@@ -132,9 +133,9 @@ public class PickUpController : MonoBehaviour
 
             //if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == altLayerIndex)
             //above gave issues dropping because hitinfo was detecting camera bounds not the sphere
-            if (!playermovement.isClimbing && equipped && playermovement.facingFront)
+            if (!playermovement.isClimbing && equipped && playermovement.facingFront && !playermovement.touchingTrigger)
             {
-                if (playermovement.carryButton && grabbedObject != null && equipped && buffer == 1f) //allow dropping if carrying something and the buffer has hit max
+                if (playermovement.interactButton && grabbedObject != null && equipped && buffer == 1f) //allow dropping if carrying something and the buffer has hit max
                 {
                     Drop();
                 }

@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
     public bool isClimbing;
     public bool isDiving;
     public bool facingFront = true; //for ladder directional
-    public bool carryButton = false;
+    public bool attackButton = false;
     public bool interactButton = false;
     public bool dove = false;
     public bool canFlip = true;
@@ -46,8 +46,8 @@ public class PlayerMovement : MonoBehaviour
     public bool isGravity;
     public bool mustRotate;
     public bool colliderRotate;
-
-
+    public bool touchingTrigger;
+     
 
     public bool facingRight = true; //always spawns assuming it's facing right
     private bool hasDove;
@@ -79,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
         isJumping = false;
         isGravity = true;
         mustRotate = false;
+        touchingTrigger = false;
         antigravityzone = GameObject.Find("AntiGravity Zone").GetComponent<AntigravityZone>();
     
     }
@@ -99,9 +100,9 @@ public class PlayerMovement : MonoBehaviour
     {
         dove = context.action.triggered; //reads whether or not the dive button is being triggered
     }
-    public void OnCarry(InputAction.CallbackContext context)
+    public void OnAttack(InputAction.CallbackContext context)
     {
-        carryButton = context.action.triggered; //reads whether or not the carry button is being triggered
+        attackButton = context.action.triggered; //reads whether or not the carry button is being triggered
     }
     public void OnInteract(InputAction.CallbackContext context)
     {
@@ -432,6 +433,14 @@ public class PlayerMovement : MonoBehaviour
     void OnTriggerStay2D(Collider2D collision) //every frame where Collider2D is activating a trigger collision
     {
 
+        if (collision.gameObject.tag == "Trigger" || !antigravityzone.canInteract)
+        {
+            touchingTrigger = true;
+        }
+        else
+        {
+            touchingTrigger = false;
+        }
         if (collision.gameObject.tag == "Trigger" && interactButton && antigravityzone.canInteract)
         {
             antigravityzone.canInteract = false;
@@ -504,7 +513,7 @@ public class PlayerMovement : MonoBehaviour
 
         else if (!isGravity)
         {
-            speed = 10f;
+            speed = 12.5f;
 
             if (collision.gameObject.tag != "Antigravity" && collision.gameObject.tag != "Trigger" )
             {
@@ -530,14 +539,14 @@ public class PlayerMovement : MonoBehaviour
                     isJumping = true;
                     notGrounded = true;
                     animator.SetBool("isInAir", true);
-                    speed = 10f;
+                    speed = 12.5f;
                 }
                 else //for just exiting a collision with the surface, not the wall
                 {
                     isJumping = true;
                     notGrounded = true;
                     animator.SetBool("isInAir", true);
-                    speed = 10f;
+                    speed = 12.5f;
                 }
 
             }
@@ -551,7 +560,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 isJumping = true;
                 animator.SetBool("isInAir", true);
-                speed = 10f;
+                speed = 12.5f;
 
             }
             else if (collision.gameObject.tag == "Player" && !notGrounded)

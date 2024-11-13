@@ -7,7 +7,7 @@ public class PlayerHealth : MonoBehaviour
 
     public float maxHealth = 100f;
     public float currentHealth;
-    public float damageTaken; //exists as placeholder for the damge done
+    public float damageTaken; //exists as placeholder for the formula
 
     // Start is called before the first frame update
     void Start()

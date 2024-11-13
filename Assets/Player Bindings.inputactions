@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Carry",
+                    "name": "Attack",
                     "type": "Button",
                     "id": "057208dc-1e3e-4b84-9ffe-4ee8939b8f82",
                     "expectedControlType": "Button",
@@ -365,7 +365,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "Carry",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -376,7 +376,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
-                    "action": "Carry",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

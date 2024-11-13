@@ -1567,7 +1567,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3002617537560429136}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
-        m_MethodName: OnCarry
+        m_MethodName: OnAttack
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1653,6 +1653,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 0
+  damageTaken: 0
 --- !u!1 &3002617537609832753
 GameObject:
   m_ObjectHideFlags: 0

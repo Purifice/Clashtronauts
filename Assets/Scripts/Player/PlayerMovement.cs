@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb2D;
     public Animator animator;
     public AntigravityZone antigravityzone;
+    public PlayerHealth playerHealth;
 
 
     public float speed;
@@ -202,232 +203,240 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
        
-        if (isGravity)
+        if (!playerHealth.isOut)
         {
+            if (isGravity)
+            {
 
-            OrientUp();
-            if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f))
-            {
-                rb2D.velocity = new Vector2(movementInput.x * (dampener * speed), rb2D.velocity.y);
-                animator.SetBool("isWalking", true);
-                isMoving = true;
-            }
-            else if (!isDiving && (movementInput.x <= 0f || movementInput.x >= -0f))
-            {
-                dampener = .1f;
-                animator.SetBool("isWalking", false);
-                isMoving = false;
-            }
-            else
-            {
-                animator.SetBool("isWalking", false);
-                isMoving = false;
-            }
-
-            if (!isJumping && jumped)
-            {
-                // rb2D.AddForce(new Vector2(0f, moveVertical * jump), ForceMode2D.Impulse);
-                //The above method uses the applying force method
-                rb2D.velocity = new Vector2(rb2D.velocity.x, jump);
-                animator.SetBool("isJumping", true);
-            }
-            else
-            {
-                animator.SetBool("isJumping", false);
-
-            }
-
-            // if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
-            if (isLadder && climbed)
-            {
-                isClimbing = true;
-                animator.SetBool("isClimbing", true);
-
-            }
-            else
-            {
-                isClimbing = false;
-                animator.SetBool("isClimbing", false);
-
-            }
-
-            if (isClimbing)
-            {
-                if (isJumping)
+                OrientUp();
+                if (!isDiving && (movementInput.x > 0f || movementInput.x < -0f))
                 {
-                    animator.SetBool("isDiving", false);
+                    rb2D.velocity = new Vector2(movementInput.x * (dampener * speed), rb2D.velocity.y);
+                    animator.SetBool("isWalking", true);
+                    isMoving = true;
+                }
+                else if (!isDiving && (movementInput.x <= 0f || movementInput.x >= -0f))
+                {
+                    dampener = .1f;
+                    animator.SetBool("isWalking", false);
+                    isMoving = false;
+                }
+                else
+                {
+                    animator.SetBool("isWalking", false);
+                    isMoving = false;
                 }
 
-                rb2D.gravityScale = 0f; //sets gravity to 0
-                rb2D.velocity = new Vector2(rb2D.velocity.x, vertical * speed); //moves up ladder
-
-            }
-            else
-            {
-                rb2D.gravityScale = 5f; //reset gravity to default if not climbing
-
-            }
-
-            if (isClimbing && facingFront && facingRight) //if entering a climb from the right
-            {
-                climbfromLeft = false;
-                climbfromRight = true;
-                canFlip = false; //prevent 180 degree flips
-                facingFront = !facingFront; //prevent looping rotation
-                modelChild.transform.Rotate(0, -90, 0); //rotate left to face ladder
-            }
-            else if (isClimbing && facingFront && !facingRight) //if entering a climb from the left
-            {
-
-                climbfromLeft = true;
-                climbfromRight = false;
-                canFlip = false;
-                facingFront = !facingFront;
-                modelChild.transform.Rotate(0, 90, 0); //rotate right to face ladder
-            }
-
-            if (!facingFront && movementInput.x < 0 && !isLadder) //if off ladder but still facing it, and moving left
-            {
-                if (!facingRight) //if facing left
+                if (!isJumping && jumped)
                 {
-                    canFlip = true; //allow for 180 rotations
+                    // rb2D.AddForce(new Vector2(0f, moveVertical * jump), ForceMode2D.Impulse);
+                    //The above method uses the applying force method
+                    rb2D.velocity = new Vector2(rb2D.velocity.x, jump);
+                    animator.SetBool("isJumping", true);
+                }
+                else
+                {
+                    animator.SetBool("isJumping", false);
+
+                }
+
+                // if (isLadder && Mathf.Abs(vertical) > 0f) //if touching ladder and moving up
+                if (isLadder && climbed)
+                {
+                    isClimbing = true;
+                    animator.SetBool("isClimbing", true);
+
+                }
+                else
+                {
+                    isClimbing = false;
+                    animator.SetBool("isClimbing", false);
+
+                }
+
+                if (isClimbing)
+                {
+                    if (isJumping)
+                    {
+                        animator.SetBool("isDiving", false);
+                    }
+
+                    rb2D.gravityScale = 0f; //sets gravity to 0
+                    rb2D.velocity = new Vector2(rb2D.velocity.x, vertical * speed); //moves up ladder
+
+                }
+                else
+                {
+                    rb2D.gravityScale = 5f; //reset gravity to default if not climbing
+
+                }
+
+                if (isClimbing && facingFront && facingRight) //if entering a climb from the right
+                {
+                    climbfromLeft = false;
+                    climbfromRight = true;
+                    canFlip = false; //prevent 180 degree flips
+                    facingFront = !facingFront; //prevent looping rotation
+                    modelChild.transform.Rotate(0, -90, 0); //rotate left to face ladder
+                }
+                else if (isClimbing && facingFront && !facingRight) //if entering a climb from the left
+                {
+
+                    climbfromLeft = true;
+                    climbfromRight = false;
+                    canFlip = false;
                     facingFront = !facingFront;
-                    modelChild.transform.Rotate(0, -90, 0); //rotate left
+                    modelChild.transform.Rotate(0, 90, 0); //rotate right to face ladder
                 }
-                else if (facingRight) //if facing right
+
+                if (!facingFront && movementInput.x < 0 && !isLadder) //if off ladder but still facing it, and moving left
+                {
+                    if (!facingRight) //if facing left
+                    {
+                        canFlip = true; //allow for 180 rotations
+                        facingFront = !facingFront;
+                        modelChild.transform.Rotate(0, -90, 0); //rotate left
+                    }
+                    else if (facingRight) //if facing right
+                    {
+                        canFlip = true;
+                        facingFront = !facingFront;
+                        modelChild.transform.Rotate(0, 90, 0); //rotate right
+                    }
+                }
+                else if (!facingFront && movementInput.x > 0 && !isLadder) //if off ladder but still facing it, and moving right
+                {
+                    if (facingRight) //if facing right
+                    {
+                        canFlip = true;
+                        facingFront = !facingFront;
+                        modelChild.transform.Rotate(0, 90, 0); //rotate right
+                    }
+                    else if (!facingRight) //if facing left
+                    {
+                        canFlip = true;
+                        facingFront = !facingFront;
+                        modelChild.transform.Rotate(0, -90, 0); //rotate left
+                    }
+                }
+
+                if (!facingFront && isLadder)
+                {
+                    canFlip = false;
+                }
+                if (!facingFront && !isLadder)
+                {
+                    canFlip = true;
+                }
+
+                if (!facingFront && !isJumping && !isMoving && !facingRight)
                 {
                     canFlip = true;
                     facingFront = !facingFront;
+                    modelChild.transform.Rotate(0, -90, 0);
+
+                }
+                else if (!facingFront && !isJumping && !isMoving && facingRight)
+                {
+                    canFlip = true;
+                    facingFront = !facingFront;
+                    modelChild.transform.Rotate(0, 90, 0);
+
+                }
+
+
+                if (movementInput.x < 0 && facingRight && canFlip) //if moving left and facing right and able to flip
+                {
+                    flip(); //defined in void flip
+                }
+                if (movementInput.x > 0 && !facingRight && canFlip) //if moving right and facing left and able to flip
+                {
+                    flip();
+                }
+
+
+
+                rb2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+            }
+
+            else if (!isGravity)
+            {
+
+                rb2D.gravityScale = 0f;
+                animator.SetBool("isInAir", true);
+                LockXRotation();
+                LimitVelocity();
+                //Debug.Log(rb2D.velocity);
+
+                if (isDiving)
+                {
+                    RotateTowardsTargetLimited();
+                }
+
+                //applying movement force
+                if (!isDiving && ((movementInput.x > 0f || movementInput.x < -0f) || (movementInput.y > 0f || movementInput.y < -0f)))
+                {
+                    rb2D.AddForce(new Vector2(movementInput.x * ((1f + dampener) * speed), movementInput.y * ((1f + dampener) * speed)), ForceMode2D.Force);
+                    //applies a force as opposed to setting a velocity
+
+                    //animator.SetBool("animationstate", true);
+                    isMoving = true;
+
+                }
+
+                //applies logic for not moving
+                else if (!isDiving && ((movementInput.x <= 0f || movementInput.x >= -0f) || (movementInput.y <= 0f || movementInput.y >= -0f)))
+                {
+                    dampener = .1f;
+                    //animator.SetBool("animationstate", false);
+                    isMoving = false;
+                }
+
+                //ladder movement and direction
+                if (climbfromLeft && !facingFront)
+                {
                     modelChild.transform.Rotate(0, 90, 0); //rotate right
+                    climbfromLeft = false;
+
                 }
-            }
-            else if (!facingFront && movementInput.x > 0 && !isLadder) //if off ladder but still facing it, and moving right
-            {
-                if (facingRight) //if facing right
+                if (climbfromRight && !facingFront)
                 {
-                    canFlip = true;
-                    facingFront = !facingFront;
-                    modelChild.transform.Rotate(0, 90, 0); //rotate right
-                }
-                else if (!facingRight) //if facing left
-                {
-                    canFlip = true;
-                    facingFront = !facingFront;
                     modelChild.transform.Rotate(0, -90, 0); //rotate left
+                    climbfromRight = false;
+
                 }
+
+                if (isMoving)
+                {
+                    //Debug.Log ("moving"); 
+                    RotateTowardsTarget();
+                }
+                else
+                {
+                    rb2D.angularDrag = .5f;
+                }
+
+                rb2D.constraints = RigidbodyConstraints2D.None;
             }
 
-            if (!facingFront && isLadder)
+            /*if (antigravityzone.interacting && !antigravityzone.zone.enabled) //if a player is pressing the button and the zone is off
             {
-                canFlip = false;
+                //Debug.Log("test");
+                mustRotate = true;
             }
-            if (!facingFront && !isLadder)
+            if (mustRotate && !notGrounded)
             {
-                canFlip = true;
-            }
-
-            if (!facingFront && !isJumping && !isMoving && !facingRight)
-            {
-                canFlip = true;
-                facingFront = !facingFront;
-                modelChild.transform.Rotate(0, -90, 0);
-
-            }
-            else if (!facingFront && !isJumping && !isMoving && facingRight)
-            {
-                canFlip = true;
-                facingFront = !facingFront;
-                modelChild.transform.Rotate(0, 90, 0);
-
-            }
-
-
-            if (movementInput.x < 0 && facingRight && canFlip) //if moving left and facing right and able to flip
-            {
-                flip(); //defined in void flip
-            }
-            if (movementInput.x > 0 && !facingRight && canFlip) //if moving right and facing left and able to flip
-            {
-                flip();
-            }
-
-
-
-            rb2D.constraints = RigidbodyConstraints2D.FreezeRotation;
-
+                //Debug.Log ("time to rotate to normal!");
+                OrientUp();
+                mustRotate = false;
+            }*/
+        }
+        else if (playerHealth.isOut)
+        {
+            rb2D.transform.position = new Vector3(1, 8, -50);
         }
 
-        else if (!isGravity)
-        {
-
-            rb2D.gravityScale = 0f;
-            animator.SetBool("isInAir", true);
-            LockXRotation();
-            LimitVelocity();
-            //Debug.Log(rb2D.velocity);
-
-            if(isDiving)
-            {
-                RotateTowardsTargetLimited();
-            }
-
-            //applying movement force
-            if (!isDiving && ((movementInput.x > 0f || movementInput.x < -0f) || (movementInput.y > 0f || movementInput.y < -0f)))
-            {
-                rb2D.AddForce(new Vector2(movementInput.x * ((1f + dampener) * speed), movementInput.y * ((1f + dampener) * speed)), ForceMode2D.Force);
-                //applies a force as opposed to setting a velocity
-
-                //animator.SetBool("animationstate", true);
-                isMoving = true;
-
-            }
-
-            //applies logic for not moving
-            else if (!isDiving && ((movementInput.x <= 0f || movementInput.x >= -0f) || (movementInput.y <= 0f || movementInput.y >= -0f)))
-            {
-                dampener = .1f;
-                //animator.SetBool("animationstate", false);
-                isMoving = false;
-            }
-
-            //ladder movement and direction
-            if (climbfromLeft && !facingFront)
-            {
-                modelChild.transform.Rotate(0, 90, 0); //rotate right
-                climbfromLeft = false;
-
-            }
-            if (climbfromRight && !facingFront)
-            {
-                modelChild.transform.Rotate(0, -90, 0); //rotate left
-                climbfromRight = false;
-
-            }
-
-            if (isMoving)
-            {
-                //Debug.Log ("moving"); 
-                RotateTowardsTarget();
-            }
-            else
-            {
-                rb2D.angularDrag = .5f;
-            }
-
-            rb2D.constraints = RigidbodyConstraints2D.None;
-        }
-
-        /*if (antigravityzone.interacting && !antigravityzone.zone.enabled) //if a player is pressing the button and the zone is off
-        {
-            //Debug.Log("test");
-            mustRotate = true;
-        }
-        if (mustRotate && !notGrounded)
-        {
-            //Debug.Log ("time to rotate to normal!");
-            OrientUp();
-            mustRotate = false;
-        }*/
     }
 
     void OnTriggerStay2D(Collider2D collision) //every frame where Collider2D is activating a trigger collision

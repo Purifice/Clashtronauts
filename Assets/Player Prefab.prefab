@@ -1365,15 +1365,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3002617537560429166}
+  - component: {fileID: -8105755781067176213}
+  - component: {fileID: 9084883967512436325}
   - component: {fileID: 3002617537560429136}
   - component: {fileID: 3002617537560429165}
   - component: {fileID: 3002617537560429139}
   - component: {fileID: 3002617537560429138}
   - component: {fileID: 3002617537560429137}
-  - component: {fileID: -8105755781067176213}
   m_Layer: 8
   m_Name: Player Prefab
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1398,6 +1399,42 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-8105755781067176213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3002617537560429147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d210436293571a549a22678135d13ee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 0
+  damageTaken: 0
+  diffVelX: 0
+  diffVelY: 0
+  roughDamage: 0
+  isOut: 0
+--- !u!114 &9084883967512436325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3002617537560429147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 703b6811fd02da14e9f1fe3788f3a701, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMass: 1
+  baseDamage: 0
+  itemVelX: 0
+  itemVelY: 0
+  rb2d: {fileID: 3002617537560429165}
 --- !u!114 &3002617537560429136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1412,6 +1449,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
   antigravityzone: {fileID: 0}
+  playerHealth: {fileID: -8105755781067176213}
   speed: 0
   maxVelocity: 25
   jump: 0
@@ -1421,7 +1459,7 @@ MonoBehaviour:
   isClimbing: 0
   isDiving: 0
   facingFront: 1
-  carryButton: 0
+  attackButton: 0
   interactButton: 0
   dove: 0
   canFlip: 1
@@ -1431,6 +1469,7 @@ MonoBehaviour:
   isGravity: 0
   mustRotate: 0
   colliderRotate: 0
+  touchingTrigger: 0
   facingRight: 1
   modelChild: {fileID: 0}
 --- !u!50 &3002617537560429165
@@ -1639,21 +1678,6 @@ MonoBehaviour:
   playerID: 0
   startPos: {x: 0, y: 0, z: 0}
   startRot: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &-8105755781067176213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3002617537560429147}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d210436293571a549a22678135d13ee5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
-  damageTaken: 0
 --- !u!1 &3002617537609832753
 GameObject:
   m_ObjectHideFlags: 0

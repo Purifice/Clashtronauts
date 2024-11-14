@@ -384,9 +384,10 @@ GameObject:
   - component: {fileID: 500216603}
   - component: {fileID: 500216608}
   - component: {fileID: 500216609}
+  - component: {fileID: 500216610}
   m_Layer: 7
   m_Name: Sphere
-  m_TagString: Pickables
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -521,6 +522,23 @@ MonoBehaviour:
   rb2d: {fileID: 500216603}
   isGravity: 1
   currentGravity: 0
+--- !u!114 &500216610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 500216602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 703b6811fd02da14e9f1fe3788f3a701, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMass: 1
+  baseDamage: 0
+  itemVelX: 0
+  itemVelY: 0
+  rb2d: {fileID: 500216603}
 --- !u!1 &503776655
 GameObject:
   m_ObjectHideFlags: 0

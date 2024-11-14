@@ -434,7 +434,8 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (playerHealth.isOut)
         {
-            rb2D.transform.position = new Vector3(1, 8, -50);
+           // rb2D.transform.position = new Vector3(1, 8, -50);
+            Destroy(gameObject);
         }
 
     }

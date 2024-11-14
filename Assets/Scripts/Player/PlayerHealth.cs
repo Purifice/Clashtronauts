@@ -65,7 +65,11 @@ public class PlayerHealth : MonoBehaviour
                 damageTaken = 0f; //otherwise don't take any damage
             }
 
-            TakeDamage();
+           
+            if (damageTaken >= 3)
+            {
+                TakeDamage();
+            }
         }
         else
         {

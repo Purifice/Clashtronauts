@@ -65,7 +65,18 @@ public class PlayerSpawnManager : MonoBehaviour
 
     private void Start() //currently joining player 1 in start function
     {
-     // PlayerInputManager.instance.JoinPlayer(0, -1, null); //looks for player index, splitscreen index, controlscheme index, and input device
+        // PlayerInputManager.instance.JoinPlayer(0, -1, null); //looks for player index, splitscreen index, controlscheme index, and input device
+    }
+
+    private void Update()
+    {
+        foreach (var player in playerList)
+        {
+            if(player == null)
+            {
+                UnregisterPlayer(player);
+            }
+        }
     }
 
     void JoinAction (InputAction.CallbackContext context)
@@ -103,6 +114,10 @@ public class PlayerSpawnManager : MonoBehaviour
             PlayerLeftGame(playerInput);
         }
 
-        Destroy(playerInput.gameObject);
+        if (playerInput != null)
+        {
+            Destroy(playerInput.gameObject);
+        }
+
     }
 }

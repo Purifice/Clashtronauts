@@ -68,15 +68,36 @@ public class CameraController : MonoBehaviour
 
         if (PlayerSpawnManager.instance.playerList.Count == 2)
         {
-        CameraController.instance.playerTwo = PlayerSpawnManager.instance.playerList[1].gameObject.transform;
+            if (PlayerSpawnManager.instance.playerList[1] == null)
+            {
+                CameraController.instance.playerTwo = null;
+            }
+            else
+            {
+                CameraController.instance.playerTwo = PlayerSpawnManager.instance.playerList[1].gameObject.transform;
+            }
         }
         if (PlayerSpawnManager.instance.playerList.Count == 3)
         {
-        CameraController.instance.playerThree = PlayerSpawnManager.instance.playerList[2].gameObject.transform;
+            if (PlayerSpawnManager.instance.playerList[2] == null)
+            {
+                CameraController.instance.playerThree = null;
+            }
+            else
+            {
+                CameraController.instance.playerThree = PlayerSpawnManager.instance.playerList[2].gameObject.transform;
+            }
         }
         if (PlayerSpawnManager.instance.playerList.Count == 4)
         {
-        CameraController.instance.playerFour = PlayerSpawnManager.instance.playerList[3].gameObject.transform;
+            if(PlayerSpawnManager.instance.playerList[3] == null)
+            {
+                CameraController.instance.playerFour = null;
+            }
+            else
+            {
+                CameraController.instance.playerFour = PlayerSpawnManager.instance.playerList[3].gameObject.transform;
+            }
         }
         // Assigns the transform value of "playerTwo" "playerThree" and "playerFour" to the second, third, and fourth players upon joining
         

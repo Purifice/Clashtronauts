@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Build.Content;
+//using UnityEditor.Build.Content;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -65,6 +65,22 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (PlayerSpawnManager.instance.playerList.Count ==1)
+        {
+            if(PlayerSpawnManager.instance.playerList[0] != null)
+            {
+                CameraController.instance.playerOne = PlayerSpawnManager.instance.playerList[0].gameObject.transform;
+                if (CameraController.instance.playerTwo != null || CameraController.instance.playerThree != null || CameraController.instance.playerFour != null)
+                {
+                    CameraController.instance.playerTwo = null;
+                    CameraController.instance.playerThree = null;
+                    CameraController.instance.playerFour = null;
+
+
+                }
+            }
+        }
 
         if (PlayerSpawnManager.instance.playerList.Count == 2)
         {

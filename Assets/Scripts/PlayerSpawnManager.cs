@@ -14,28 +14,34 @@ public class PlayerSpawnManager : MonoBehaviour
     public event System.Action <PlayerInput> PlayerJoinedGame;
     public event System.Action<PlayerInput> PlayerLeftGame;
 
+    public bool canRespawn;
+
     [SerializeField] InputAction joinAction;
     [SerializeField] InputAction leaveAction;
 
 
     void OnPlayerJoined(PlayerInput playerInput)
     {
-        Debug.Log("PlayerInput ID:" + playerInput.playerIndex + "Joined the Game!");
 
-        playerInput.gameObject.GetComponent<PlayerDetails>().playerID = playerInput.playerIndex + 1;
-        //gets the player ID from player details and adds +1 to it
+        if (canRespawn)
+            {
+            Debug.Log("PlayerInput ID:" + playerInput.playerIndex + "Joined the Game!");
 
-        playerInput.gameObject.GetComponent<PlayerDetails>().startPos = spawnLocations[playerInput.playerIndex].position;
-        //gets the starting position from playerdetails and sets it to the spawnlocation positions
+            playerInput.gameObject.GetComponent<PlayerDetails>().playerID = playerInput.playerIndex + 1;
+            //gets the player ID from player details and adds +1 to it
 
-        playerInput.gameObject.GetComponent<PlayerDetails>().startRot = spawnLocations[playerInput.playerIndex].rotation;
-        //same as above but with rotation
+            playerInput.gameObject.GetComponent<PlayerDetails>().startPos = spawnLocations[playerInput.playerIndex].position;
+            //gets the starting position from playerdetails and sets it to the spawnlocation positions
 
-        playerList.Add(playerInput); //adds the playerInput to the playerlist when joining
+            playerInput.gameObject.GetComponent<PlayerDetails>().startRot = spawnLocations[playerInput.playerIndex].rotation;
+            //same as above but with rotation
 
-        if (PlayerJoinedGame != null)
-        {
-            PlayerJoinedGame(playerInput);
+            playerList.Add(playerInput); //adds the playerInput to the playerlist when joining
+
+            if (PlayerJoinedGame != null)
+            {
+                PlayerJoinedGame(playerInput);
+            }
         }
     }
     void OnPlayerLeft(PlayerInput playerInput)
@@ -66,6 +72,7 @@ public class PlayerSpawnManager : MonoBehaviour
     private void Start() //currently joining player 1 in start function
     {
         // PlayerInputManager.instance.JoinPlayer(0, -1, null); //looks for player index, splitscreen index, controlscheme index, and input device
+        canRespawn = true;
     }
 
     private void Update()
@@ -79,12 +86,13 @@ public class PlayerSpawnManager : MonoBehaviour
         }
     }
 
-    void JoinAction (InputAction.CallbackContext context)
+    void JoinAction(InputAction.CallbackContext context)
     {
-       
-        PlayerInputManager.instance.JoinPlayerFromActionIfNotAlreadyJoined(context);
-        CameraController.instance.SetCamera();
-
+        if (canRespawn)
+        {
+            PlayerInputManager.instance.JoinPlayerFromActionIfNotAlreadyJoined(context);
+            CameraController.instance.SetCamera();
+        }
     }
     void LeaveAction(InputAction.CallbackContext context)
     {

@@ -208,6 +208,7 @@ MonoBehaviour:
   grabbedObject: {fileID: 0}
   playermovement: {fileID: 3002617537560429136}
   equipped: 0
+  throwImmunity: 0
   buffer: 0.1
   noHit:
     serializedVersion: 2
@@ -1411,13 +1412,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d210436293571a549a22678135d13ee5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemHurtbox: {fileID: 0}
+  pickUpController: {fileID: 6876419816952126189}
   maxHealth: 100
   currentHealth: 0
   damageTaken: 0
   diffVelX: 0
   diffVelY: 0
   roughDamage: 0
+  shieldTimer: 0
   isOut: 0
+  shielding: 0
 --- !u!114 &9084883967512436325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1658,6 +1663,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9cedf03b-8cfc-4270-9fa0-b5f017127eb5
     m_ActionName: Player 2/Interact[/Keyboard/comma]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: -8105755781067176213}
+        m_TargetAssemblyTypeName: PlayerHealth, Assembly-CSharp
+        m_MethodName: OnShield
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5983d890-f20a-4ff9-8e24-c1751a71d34d
+    m_ActionName: Player 1/Shield[/Keyboard/semicolon]
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player 1

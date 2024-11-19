@@ -39,8 +39,10 @@ public class PickUpController : MonoBehaviour
     //public AntigravityZone antigravityzone;
 
     public bool equipped = false;
+    public bool throwImmunity = false;
 
     public float buffer = .1f;
+    public float throwBuffer;
 
     public LayerMask noHit;
 
@@ -59,6 +61,7 @@ public class PickUpController : MonoBehaviour
         altLayerIndex = LayerMask.NameToLayer("Grabbed");
 
         animator = playermovement.GetComponent<Animator>();
+        throwBuffer = 0f;
 
 
         if (!equipped)
@@ -76,7 +79,7 @@ public class PickUpController : MonoBehaviour
         buffer = .1f;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (buffer < 1 && equipped) //If the carry/throw time buffer hasn't started and something is equipped
             {
@@ -151,12 +154,27 @@ public class PickUpController : MonoBehaviour
                 Drop();
             }
 
-            //Debug.DrawRay(rayPoint.position, transform.right * rayDistance);
-            //Debug.Log(hitInfo.collider);        
+        //Debug.DrawRay(rayPoint.position, transform.right * rayDistance);
+        //Debug.Log(hitInfo.collider);
+
+
+        if (throwImmunity)
+        {
+            throwBuffer += Time.deltaTime;
+
+            if (throwBuffer >= 0.05f)
+            {
+                throwImmunity = false;
+                throwBuffer = 0f;
+            }
+        }
+
+
     }
 
     void Drop()
     {
+        throwImmunity = true;
         Physics2D.IgnoreLayerCollision(7, 8, false);
         animator.SetBool("isCarrying", false);
         grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
@@ -183,6 +201,7 @@ public class PickUpController : MonoBehaviour
         grabbedObject = null;
         rigidbody2 = GetComponentInChildren<Rigidbody2D>();
         equipped = false;
+        
         
 
         /* rb2D.velocity = player.GetComponent<Rigidbody2D>().velocity;

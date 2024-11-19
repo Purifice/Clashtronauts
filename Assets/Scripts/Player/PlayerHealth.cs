@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+
 
 public class PlayerHealth : MonoBehaviour
 {
 
-    ItemHurtbox itemHurtbox;
+    public ItemHurtbox itemHurtbox;
+    public PickUpController pickUpController;
 
     public float maxHealth = 100f;
     public float currentHealth;
@@ -13,8 +16,12 @@ public class PlayerHealth : MonoBehaviour
     public float diffVelX;
     public float diffVelY;
     public float roughDamage;
+    public float shieldTimer;
+    public float shieldCount;
 
     public bool isOut;
+    public bool shielding;
+    public bool countCanChange;
 
     private float playerVelX;
     private float playerVelY;
@@ -26,11 +33,18 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         isOut = false;
+        shieldTimer = 0f;
+        shieldCount = 3f;
+    }
+
+    public void OnShield(InputAction.CallbackContext context)
+    {
+        shielding = context.action.enabled; //reads whether or not the set shield button has been pressed
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player") //if colliding with a "Player" tagged object
+        if (collision.gameObject.tag == "Player" && !shielding && !pickUpController.throwImmunity) //if colliding with a "Player" tagged object and not shielding or throwing
         {
             itemHurtbox = collision.gameObject.GetComponent<ItemHurtbox>(); //assign the reference of itemHurtbox
 
@@ -77,6 +91,46 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        if (shielding)
+        {
+            if (shieldCount == 3f && countCanChange)
+            {
+                shieldCount = 2f;
+                countCanChange = false;
+            }
+
+            if(shieldCount == 2f && countCanChange) 
+            {
+                shieldCount = 1f;
+                countCanChange = false;
+
+            }
+
+            if (shieldCount == 1f && countCanChange)
+            {
+                shieldCount = 0f;
+                countCanChange = false;
+
+            }
+
+            shieldTimer += Time.deltaTime;
+
+            if (shieldTimer >= .25f || shieldCount <= 0f)
+            {
+                shielding = false;
+                shieldTimer = 0f;
+            }
+        }
+        else
+        {
+            shieldTimer = 0f;
+            countCanChange = true;
+
+        }
+
+    }
 
     void TakeDamage()
     {

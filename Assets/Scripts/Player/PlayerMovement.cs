@@ -18,11 +18,12 @@ public class PlayerMovement : MonoBehaviour
     public float maxVelocity;
     public float jump;
     public float dampener = .1f;
+    public float verticalDampener = .1f;
     
 
     //private float moveHorizontal;
     //private float moveVertical;
-    private float vertical; //for ladder movement
+    public float vertical; //for ladder movement
     private float rotationSpeed;
     private float offset;
     private float angle;
@@ -37,8 +38,8 @@ public class PlayerMovement : MonoBehaviour
     public bool isClimbing;
     public bool isDiving;
     public bool facingFront = true; //for ladder directional
-    public bool attackButton = false;
     public bool interactButton = false;
+    public bool carryButton = false;
     public bool dove = false;
     public bool canFlip = true;
     public bool climbfromRight = false;
@@ -77,7 +78,9 @@ public class PlayerMovement : MonoBehaviour
         maxVelocity = 17.5f;
         jump = 20f;
         dampener = .1f;
-        isJumping = false;
+        verticalDampener = .1f;
+
+    isJumping = false;
         isGravity = true;
         mustRotate = false;
         touchingTrigger = false;
@@ -101,13 +104,13 @@ public class PlayerMovement : MonoBehaviour
     {
         dove = context.action.triggered; //reads whether or not the dive button is being triggered
     }
-    public void OnAttack(InputAction.CallbackContext context)
-    {
-        attackButton = context.action.triggered; //reads whether or not the carry button is being triggered
-    }
     public void OnInteract(InputAction.CallbackContext context)
     {
-        interactButton = context.action.triggered; //reads whether or not the interact button is being triggered
+        interactButton = context.action.triggered; //reads whether or not the carry button is being triggered
+    }
+    public void OnCarry(InputAction.CallbackContext context)
+    {
+        carryButton = context.action.triggered; //reads whether or not the interact button is being triggered
     }
 
     // Update is called once per frame
@@ -125,7 +128,25 @@ public class PlayerMovement : MonoBehaviour
             dampener = 1f;
         }
 
-        vertical = Input.GetAxis("Vertical"); // for determining a smoother vertical movement occurence
+        if (verticalDampener < 1) // gradually unlimits the movement speed for a smooth acceleration
+        {
+            verticalDampener += 3f * Time.deltaTime;
+        }
+        else if (verticalDampener > 1)
+        {
+            verticalDampener = 1f;
+        }
+        
+
+        // vertical = Input.GetAxis("Vertical"); // for determining a smoother vertical movement occurence
+        if (movementInput.y > 0.1f)
+            vertical = 1f * verticalDampener;
+        else
+            vertical = 0f;
+        if (vertical == 0)
+        {
+            verticalDampener = 0;
+        }
 
         if (isGravity)
         {
@@ -202,7 +223,7 @@ public class PlayerMovement : MonoBehaviour
     // Fixed Update is called every fixed-rate frame, and is best for physics
     void FixedUpdate()
     {
-       
+        
         if (!playerHealth.isOut)
         {
             if (isGravity)

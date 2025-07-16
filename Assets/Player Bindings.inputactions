@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Attack",
+                    "name": "Interact",
                     "type": "Button",
                     "id": "057208dc-1e3e-4b84-9ffe-4ee8939b8f82",
                     "expectedControlType": "Button",
@@ -51,7 +51,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Interact",
+                    "name": "Carry",
                     "type": "Value",
                     "id": "519eeea7-86a1-434b-ad21-403c9def7938",
                     "expectedControlType": "Button",
@@ -370,28 +370,6 @@
                 {
                     "name": "",
                     "id": "46e1858d-fdcd-4f13-ac5d-551ae333c3f4",
-                    "path": "<Keyboard>/slash",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1d400abd-2463-46e3-918d-7f8bedee3904",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a3cb1e8f-cae6-41a5-aea8-27d1f7d47720",
                     "path": "<Keyboard>/comma",
                     "interactions": "",
                     "processors": "",
@@ -402,12 +380,34 @@
                 },
                 {
                     "name": "",
+                    "id": "1d400abd-2463-46e3-918d-7f8bedee3904",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a3cb1e8f-cae6-41a5-aea8-27d1f7d47720",
+                    "path": "<Keyboard>/slash",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Carry",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "e6cb2f27-5742-44b3-be38-7f151f7b00a6",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
-                    "action": "Interact",
+                    "action": "Carry",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

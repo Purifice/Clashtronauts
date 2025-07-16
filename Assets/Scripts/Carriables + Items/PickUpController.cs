@@ -89,7 +89,7 @@ public class PickUpController : MonoBehaviour
             {
                 buffer = 1f; //set it to its finished actionable state (can be thrown)
             }
-        if (buffer == 1 && !equipped && playermovement.interactButton) //if the buffer has finished and the player has nothing equipped but is still pressing carry
+        if (buffer == 1 && !equipped && playermovement.carryButton) //if the buffer has finished and the player has nothing equipped but is still pressing carry
         {
             buffer = .5f; //set the buffer to a non-actionable state (cannot carry or throw)
         }
@@ -112,7 +112,7 @@ public class PickUpController : MonoBehaviour
             //if hitting something, and if that thing is what's specified in layerIndex (the Pickables layer)
             {
                 //Debug.Log("can carry");
-                if (playermovement.interactButton && grabbedObject == null && buffer == .1f) //if button to carry is pressed and nothing is grabbed and buffer is reset
+                if (playermovement.carryButton && grabbedObject == null && buffer == .1f) //if button to carry is pressed and nothing is grabbed and buffer is reset
                 {
                     Physics2D.IgnoreLayerCollision(6, 8, true);
                     Physics2D.IgnoreLayerCollision(7, 8, true);
@@ -138,7 +138,7 @@ public class PickUpController : MonoBehaviour
             //above gave issues dropping because hitinfo was detecting camera bounds not the sphere
             if (!playermovement.isClimbing && equipped && playermovement.facingFront && !playermovement.touchingTrigger)
             {
-                if (playermovement.interactButton && grabbedObject != null && equipped && buffer == 1f) //allow dropping if carrying something and the buffer has hit max
+                if (playermovement.carryButton && grabbedObject != null && equipped && buffer == 1f) //allow dropping if carrying something and the buffer has hit max
                 {
                     Drop();
                 }

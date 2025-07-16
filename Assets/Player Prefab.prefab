@@ -210,6 +210,7 @@ MonoBehaviour:
   equipped: 0
   throwImmunity: 0
   buffer: 0.1
+  throwBuffer: 0
   noHit:
     serializedVersion: 2
     m_Bits: 499
@@ -1421,8 +1422,10 @@ MonoBehaviour:
   diffVelY: 0
   roughDamage: 0
   shieldTimer: 0
+  shieldCount: 0
   isOut: 0
   shielding: 0
+  countCanChange: 0
 --- !u!114 &9084883967512436325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1465,7 +1468,7 @@ MonoBehaviour:
   isDiving: 0
   facingFront: 1
   attackButton: 0
-  interactButton: 0
+  carryButton: 0
   dove: 0
   canFlip: 1
   climbfromRight: 0
@@ -1611,7 +1614,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3002617537560429136}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
-        m_MethodName: OnAttack
+        m_MethodName: OnInteract
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1627,7 +1630,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3002617537560429136}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
-        m_MethodName: OnInteract
+        m_MethodName: OnCarry
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

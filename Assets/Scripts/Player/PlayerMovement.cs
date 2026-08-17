@@ -49,7 +49,10 @@ public class PlayerMovement : MonoBehaviour
     public bool mustRotate;
     public bool colliderRotate;
     public bool touchingTrigger;
-     
+    public bool menuAction;
+
+
+
 
     public bool facingRight = true; //always spawns assuming it's facing right
     private bool hasDove;
@@ -86,6 +89,12 @@ public class PlayerMovement : MonoBehaviour
         touchingTrigger = false;
         antigravityzone = GameObject.Find("AntiGravity Zone").GetComponent<AntigravityZone>();
     
+    }
+
+
+    public void OnMenu(InputAction.CallbackContext context)
+    {
+        menuAction = context.action.triggered; 
     }
 
     public void OnMove(InputAction.CallbackContext context)

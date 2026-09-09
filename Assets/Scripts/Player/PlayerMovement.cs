@@ -66,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 direction;
     private Vector2 faceDirection;
 
-
+    [SerializeField] private AudioClip SFXClip;
 
 
 
@@ -175,6 +175,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (!isJumping && !isClimbing && hasDove) //if on the ground and pressing the dive button
             {
+                SFXManager.instance.PlaySFX(SFXClip, transform, 1f);
                 isDiving = true;
 
                 if (facingRight)
@@ -195,6 +196,7 @@ public class PlayerMovement : MonoBehaviour
             else //if not diving
             {
                 //empty
+
             }
 
 

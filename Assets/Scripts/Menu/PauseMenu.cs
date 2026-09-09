@@ -18,7 +18,7 @@ public class PauseMenu : MonoBehaviour
     }
     void Update()
     {
-        if (playermovement.menuAction && !isPaused)
+        if (playermovement.menuAction && !isPaused && Time.timeScale != 0)
         {
            // Cursor.lockState = CursorLockMode.None;
             container.SetActive(true);

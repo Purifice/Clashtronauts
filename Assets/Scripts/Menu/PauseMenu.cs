@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 
 public class PauseMenu : MonoBehaviour
@@ -14,6 +15,13 @@ public class PauseMenu : MonoBehaviour
     public GameObject optionsContainer;
     public GameObject audioContainer;
     public GameObject videoContainer;
+    public GameObject controlsContainer;
+
+    [SerializeField] private GameObject _pauseMenuFirst;
+    [SerializeField] private GameObject _settingsMenuFirst;
+    [SerializeField] private GameObject _audioMenuFirst;
+    [SerializeField] private GameObject _videoMenuFirst;
+    [SerializeField] private GameObject _controlsMenuFirst;
 
 
     public PlayerMovement playermovement;
@@ -29,13 +37,17 @@ public class PauseMenu : MonoBehaviour
     public TMP_Dropdown resolutionDropdown;
     public Toggle fullscreenToggle;
 
+    public TMP_Dropdown qualityDropdown;
+
     private List<Resolution> resolutions = new List<Resolution>();
 
     private void Start()
     {
         isPaused = false;
 
+
         BuildResolutionDropdown();
+        qualityDropdown.onValueChanged.AddListener(SetQuality);
 
         soundMixerManager = FindObjectOfType<SoundMixerManager>();
 
@@ -55,6 +67,7 @@ public class PauseMenu : MonoBehaviour
            // Cursor.lockState = CursorLockMode.None;
             pauseContainer.SetActive(true);
             Time.timeScale = 0;
+            EventSystem.current.SetSelectedGameObject(_pauseMenuFirst);
             isPaused = true;
 
         }
@@ -75,6 +88,12 @@ public class PauseMenu : MonoBehaviour
 
         fullscreenToggle.isOn = fullscreen;
         Screen.fullScreen = fullscreen;
+
+        int qualityIndex = PlayerPrefs.GetInt("Quality");
+        SetQuality(qualityIndex);
+        qualityDropdown.value = qualityIndex;
+        qualityDropdown.RefreshShownValue();
+
 
         float masterVolume = PlayerPrefs.GetFloat("masterVolume", 1f);
         float musicVolume = PlayerPrefs.GetFloat("musicVolume", 1f);
@@ -140,10 +159,23 @@ public class PauseMenu : MonoBehaviour
         PlayerPrefs.SetInt("resolution", index);
     }
 
+
+    public void SetQuality (int qualityIndex)
+    {
+        QualitySettings.SetQualityLevel(qualityIndex);
+        PlayerPrefs.SetInt("Quality", qualityIndex);
+    }
+
     public void ResumeButton()
     {
         //Debug.Log("Resume button clicked!");
+        EventSystem.current.SetSelectedGameObject(null);
         pauseContainer.SetActive(false);
+        optionsContainer.SetActive(false);
+        audioContainer.SetActive(false);
+        videoContainer.SetActive(false);
+        controlsContainer.SetActive(false);
+        
         Time.timeScale = 1;
         isPaused = false;
     }
@@ -152,6 +184,7 @@ public class PauseMenu : MonoBehaviour
     {
         pauseContainer.SetActive(false);
         optionsContainer.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(_settingsMenuFirst);
     }
 
     public void RestartButton()
@@ -167,26 +200,34 @@ public class PauseMenu : MonoBehaviour
 
     public void AudioButton()
     {
+        EventSystem.current.SetSelectedGameObject(_audioMenuFirst);
         optionsContainer.SetActive(false);
         audioContainer.SetActive(true);
     }
 
     public void VideoButton()
     {
+        EventSystem.current.SetSelectedGameObject(_videoMenuFirst);
         optionsContainer.SetActive(false);
         videoContainer.SetActive(true);
     }
 
     public void ControlsButton()
     {
+        EventSystem.current.SetSelectedGameObject(_controlsMenuFirst);
+        optionsContainer.SetActive(false);
+        controlsContainer.SetActive(true);
 
     }
 
     public void BackButton()
     {
+        
+        EventSystem.current.SetSelectedGameObject(_pauseMenuFirst);
         PlayerPrefs.Save();
 
         optionsContainer.SetActive(false);
+        controlsContainer.SetActive(false);
         audioContainer.SetActive(false);
         videoContainer.SetActive(false);
         pauseContainer.SetActive(true);

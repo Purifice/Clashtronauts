@@ -16,12 +16,18 @@ public class PauseMenu : MonoBehaviour
     public GameObject audioContainer;
     public GameObject videoContainer;
     public GameObject controlsContainer;
+    public GameObject keyboardContainer;
+    public GameObject gamepadContainer;
+
 
     [SerializeField] private GameObject _pauseMenuFirst;
     [SerializeField] private GameObject _settingsMenuFirst;
     [SerializeField] private GameObject _audioMenuFirst;
     [SerializeField] private GameObject _videoMenuFirst;
     [SerializeField] private GameObject _controlsMenuFirst;
+    [SerializeField] private GameObject _keyboardMenuFirst;
+    [SerializeField] private GameObject _gamepadMenuFirst;
+
 
 
     public PlayerMovement playermovement;
@@ -220,12 +226,30 @@ public class PauseMenu : MonoBehaviour
 
     }
 
+    public void KeyboardButton()
+    {
+        EventSystem.current.SetSelectedGameObject(_keyboardMenuFirst);
+        controlsContainer.SetActive(false);
+        keyboardContainer.SetActive(true);
+
+    }
+    public void GamepadButton()
+    {
+        EventSystem.current.SetSelectedGameObject(_gamepadMenuFirst);
+        controlsContainer.SetActive(false);
+        gamepadContainer.SetActive(true);
+
+    }
+
+
     public void BackButton()
     {
         
         EventSystem.current.SetSelectedGameObject(_pauseMenuFirst);
         PlayerPrefs.Save();
 
+        keyboardContainer.SetActive(false);
+        gamepadContainer.SetActive(false);
         optionsContainer.SetActive(false);
         controlsContainer.SetActive(false);
         audioContainer.SetActive(false);

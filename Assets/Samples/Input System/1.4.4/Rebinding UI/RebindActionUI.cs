@@ -188,6 +188,9 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         /// </summary>
         public void UpdateBindingDisplay()
         {
+
+          
+
             var displayString = string.Empty;
             var deviceLayoutName = default(string);
             var controlPath = default(string);
@@ -196,6 +199,8 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             var action = m_Action?.action;
             if (action != null)
             {
+
+                
                 var bindingIndex = action.bindings.IndexOf(x => x.id.ToString() == m_BindingId);
                 if (bindingIndex != -1)
                     displayString = action.GetBindingDisplayString(bindingIndex, out deviceLayoutName, out controlPath, displayStringOptions);
@@ -391,11 +396,16 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
         protected void OnEnable()
         {
+
+            Debug.Log("RebindACtionUI OnEnable: " + m_Action?.action?.name);
+
             if (s_RebindActionUIs == null)
                 s_RebindActionUIs = new List<RebindActionUI>();
             s_RebindActionUIs.Add(this);
             if (s_RebindActionUIs.Count == 1)
                 InputSystem.onActionChange += OnActionChange;
+
+            UpdateBindingDisplay();
         }
 
         protected void OnDisable()

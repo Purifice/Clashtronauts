@@ -3468,7 +3468,7 @@ GameObject:
   - component: {fileID: 7782287349316195283}
   - component: {fileID: 7883045327226310750}
   - component: {fileID: 3628402098489541465}
-  - component: {fileID: 5023854225781832829}
+  - component: {fileID: 4972308468247830612}
   m_Layer: 5
   m_Name: GamepadContainer
   m_TagString: Untagged
@@ -3568,7 +3568,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputActions: {fileID: -944628639613478452, guid: 784bf7a3f8f75084f9083c92a2b408d7, type: 3}
   _targetControlScheme: Controller
---- !u!114 &5023854225781832829
+--- !u!114 &4972308468247830612
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7216,6 +7216,7 @@ MonoBehaviour:
   controlsContainer: {fileID: 2433368143654459879}
   keyboardContainer: {fileID: 8508672265585011609}
   gamepadContainer: {fileID: 2692028724874977986}
+  inputActions: {fileID: -944628639613478452, guid: 784bf7a3f8f75084f9083c92a2b408d7, type: 3}
   _pauseMenuFirst: {fileID: 5630656722165379263}
   _settingsMenuFirst: {fileID: 8624416259508192267}
   _audioMenuFirst: {fileID: 7656625740948635068}
@@ -13168,7 +13169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7151302728212126898}
   - component: {fileID: 8642200288741227875}
-  - component: {fileID: 4483966545129802289}
+  - component: {fileID: 2445551503105231981}
   m_Layer: 5
   m_Name: KeyboardContainer
   m_TagString: Untagged
@@ -13216,7 +13217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputActions: {fileID: -944628639613478452, guid: 784bf7a3f8f75084f9083c92a2b408d7, type: 3}
   _targetControlScheme: Keyboard
---- !u!114 &4483966545129802289
+--- !u!114 &2445551503105231981
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14296,7 +14297,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6923191713194978774, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
-      value: Options
+      value: Start
       objectReference: {fileID: 0}
     - target: {fileID: 8126764893162282672, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
@@ -14808,7 +14809,7 @@ PrefabInstance:
       objectReference: {fileID: 4558537218062755130}
     - target: {fileID: 6923191713194978774, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
-      value: Triangle
+      value: Y
       objectReference: {fileID: 0}
     - target: {fileID: 8126764893162282672, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
@@ -14976,7 +14977,7 @@ PrefabInstance:
       objectReference: {fileID: 4558537218062755130}
     - target: {fileID: 6923191713194978774, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
-      value: Square
+      value: X
       objectReference: {fileID: 0}
     - target: {fileID: 8126764893162282672, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
@@ -15144,7 +15145,7 @@ PrefabInstance:
       objectReference: {fileID: 4558537218062755130}
     - target: {fileID: 6923191713194978774, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
-      value: L1
+      value: LB
       objectReference: {fileID: 0}
     - target: {fileID: 8126764893162282672, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
@@ -15488,7 +15489,7 @@ PrefabInstance:
       objectReference: {fileID: 4558537218062755130}
     - target: {fileID: 6923191713194978774, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
-      value: D-Pad Up
+      value: D-Pad/Up
       objectReference: {fileID: 0}
     - target: {fileID: 8126764893162282672, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
@@ -15656,7 +15657,7 @@ PrefabInstance:
       objectReference: {fileID: 4558537218062755130}
     - target: {fileID: 6923191713194978774, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
-      value: Circle
+      value: B
       objectReference: {fileID: 0}
     - target: {fileID: 8126764893162282672, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
@@ -16172,7 +16173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6923191713194978774, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text
-      value: D-Pad Up
+      value: D-Pad/Up
       objectReference: {fileID: 0}
     - target: {fileID: 8126764893162282672, guid: f25dcd618d3acd64795bf8bb32edb6c9, type: 3}
       propertyPath: m_text

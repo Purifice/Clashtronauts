@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 
 
+
 public class PauseMenu : MonoBehaviour
 {
 
@@ -18,6 +19,9 @@ public class PauseMenu : MonoBehaviour
     public GameObject controlsContainer;
     public GameObject keyboardContainer;
     public GameObject gamepadContainer;
+
+    public InputActionAsset inputActions;
+    
 
 
     [SerializeField] private GameObject _pauseMenuFirst;
@@ -31,6 +35,7 @@ public class PauseMenu : MonoBehaviour
 
 
     public PlayerMovement playermovement;
+
 
     public bool isPaused;
 
@@ -47,6 +52,12 @@ public class PauseMenu : MonoBehaviour
 
     private List<Resolution> resolutions = new List<Resolution>();
 
+
+    private void Awake()
+    {
+        LoadRebinds();
+
+    }
     private void Start()
     {
         isPaused = false;
@@ -112,6 +123,28 @@ public class PauseMenu : MonoBehaviour
         soundMixerManager.SetMasterVolume(masterVolume);
         soundMixerManager.SetMusicVolume(musicVolume);
         soundMixerManager.SetSFXVolume(sfxVolume);
+    }
+
+    public void LoadRebinds()
+    {
+        string rebinds = PlayerPrefs.GetString("rebinds");
+
+        if (!string.IsNullOrEmpty(rebinds))
+        {
+            inputActions.LoadBindingOverridesFromJson(rebinds);
+        }
+
+       
+    }
+
+  
+
+    public void SaveRebinds()
+    {
+        string rebinds = inputActions.SaveBindingOverridesAsJson();
+
+        PlayerPrefs.SetString("rebinds", rebinds);
+        PlayerPrefs.Save();
     }
 
     public void SetMasterVolume(float value)
@@ -246,7 +279,7 @@ public class PauseMenu : MonoBehaviour
     {
         
         EventSystem.current.SetSelectedGameObject(_pauseMenuFirst);
-        PlayerPrefs.Save();
+        SaveRebinds();
 
         keyboardContainer.SetActive(false);
         gamepadContainer.SetActive(false);

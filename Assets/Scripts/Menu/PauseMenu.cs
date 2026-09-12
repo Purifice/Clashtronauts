@@ -210,10 +210,12 @@ public class PauseMenu : MonoBehaviour
         //Debug.Log("Resume button clicked!");
         EventSystem.current.SetSelectedGameObject(null);
         pauseContainer.SetActive(false);
-        optionsContainer.SetActive(false);
-        audioContainer.SetActive(false);
-        videoContainer.SetActive(false);
-        controlsContainer.SetActive(false);
+        //optionsContainer.SetActive(false);
+        //audioContainer.SetActive(false);
+        //videoContainer.SetActive(false);
+        //controlsContainer.SetActive(false);
+        BackButton();
+        pauseContainer.SetActive(false);
         
         Time.timeScale = 1;
         isPaused = false;
